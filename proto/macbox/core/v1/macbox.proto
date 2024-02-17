@@ -1,3 +1,28 @@
 syntax = "proto3";
 
 package macbox.core.v1;
+
+message SandboxCreateRequest {}
+
+message SandboxCreateResponse {}
+
+message SandboxDestroyRequest {}
+
+message SandboxDestroyResponse {}
+
+message SandboxRunRequest {}
+
+message SandboxRunResponse {}
+
+service SandboxManager {
+    rpc Create(SandboxCreateRequest) returns (SandboxCreateResponse) {}
+    rpc Destroy(SandboxDestroyRequest) returns (SandboxDestroyResponse) {}
+}
+
+message CwdRequest {}
+
+message CwdResponse {}
+
+service ApiSandbox {
+    rpc Cwd(CwdRequest) returns (CwdResponse) {}
+}
