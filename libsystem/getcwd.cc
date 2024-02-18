@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <cstring>
 #include <cstdlib>
-#include <dlfcn.h>
 #include "getcwd.hh"
 #include "libs.hh"
 

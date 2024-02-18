@@ -1,5 +1,7 @@
 #pragma once
 #include <cstddef>
+#include <cstdarg>
+#include <dlfcn.h>
 
 namespace libs {
     namespace {
@@ -22,5 +24,6 @@ namespace libs {
 
     namespace libc {
         LazyFn<char*, char*, size_t> getcwd = {"getcwd"};
+        LazyFn<long, long, void*> syscall = {"syscall"};
     }
 }
