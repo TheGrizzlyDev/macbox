@@ -4,24 +4,38 @@ package macbox.core.v1;
 
 message SandboxCreateRequest {}
 
-message SandboxCreateResponse {}
+message SandboxCreateResponse {
+    string sandbox_id = 1;
+}
 
-message SandboxDestroyRequest {}
+message SandboxDestroyRequest {
+    string sandbox_id = 1;
+}
 
 message SandboxDestroyResponse {}
 
-message SandboxRunRequest {}
+message SandboxRunRequest {
+    string sandbox_id = 1;
+}
 
-message SandboxRunResponse {}
+message SandboxRunResponse {
+    string sandbox_id = 1;
+    int32 pid = 2;
+}
 
 service SandboxManager {
     rpc Create(SandboxCreateRequest) returns (SandboxCreateResponse) {}
     rpc Destroy(SandboxDestroyRequest) returns (SandboxDestroyResponse) {}
 }
 
-message CwdRequest {}
+message CwdRequest {
+    string sandbox_id = 1;
+    int32 pid = 2;
+}
 
-message CwdResponse {}
+message CwdResponse {
+    string path = 1;
+}
 
 service ApiSandbox {
     rpc Cwd(CwdRequest) returns (CwdResponse) {}

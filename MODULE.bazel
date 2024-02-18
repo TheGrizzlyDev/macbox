@@ -5,4 +5,8 @@ bazel_dep(
     version = "1.5.0",
 )
 
-bazel_dep(name = "rules_proto", version = "6.0.0-rc2")
+RULES_PROTO_VERSION = "5.0.0-alpha2"
+
+bazel_dep(name = "rules_proto_grpc", version = RULES_PROTO_VERSION)
+bazel_dep(name = "rules_proto_grpc_cpp", version = RULES_PROTO_VERSION)
+bazel_dep(name = "rules_proto_grpc_go", version = RULES_PROTO_VERSION)

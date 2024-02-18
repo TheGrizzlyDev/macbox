@@ -1,0 +1,12 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_proto_grpc_cpp//:defs.bzl", "cpp_grpc_compile")
+
+proto_library(
+    name = "v1",
+    srcs = glob(["*.proto"]),
+)
+
+cpp_grpc_compile(
+    name = "cc",
+    protos = [":v1"],
+)
