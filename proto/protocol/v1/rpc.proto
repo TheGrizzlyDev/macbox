@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package protocol.v1;
+
+message Request {
+    string method = 1;
+    // any payload ...
+}

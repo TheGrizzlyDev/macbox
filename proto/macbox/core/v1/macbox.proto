@@ -23,11 +23,6 @@ message SandboxRunResponse {
     int32 pid = 2;
 }
 
-service SandboxManager {
-    rpc Create(SandboxCreateRequest) returns (SandboxCreateResponse) {}
-    rpc Destroy(SandboxDestroyRequest) returns (SandboxDestroyResponse) {}
-}
-
 message CwdRequest {
     string sandbox_id = 1;
     int32 pid = 2;
@@ -35,8 +30,4 @@ message CwdRequest {
 
 message CwdResponse {
     string path = 1;
-}
-
-service ApiSandbox {
-    rpc Cwd(CwdRequest) returns (CwdResponse) {}
 }

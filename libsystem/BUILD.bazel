@@ -3,7 +3,7 @@ cc_library(
     srcs = glob(["*.cc"]),
     hdrs = glob(["*.hh"]),
     linkopts = [
-        "-ldl", # Provides dlsym
+        "-ldl",  # Provides dlsym
     ],
 )
 

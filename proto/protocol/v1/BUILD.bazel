@@ -4,26 +4,27 @@ load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@rules_proto_grpc_cpp//:defs.bzl", "cpp_proto_library")
 
 proto_library(
-    name = "macbox_core_v1_proto",
-    srcs = ["macbox.proto"],
+    name = "protocol_v1_proto",
+    srcs = ["rpc.proto"],
     visibility = ["//visibility:public"],
 )
 
 go_proto_library(
-    name = "macbox_core_v1_go_proto",
-    importpath = "proto/macbox/core/v1",
-    proto = ":macbox_core_v1_proto",
+    name = "protocol_v1_go_proto",
+    importpath = "proto/protocol/v1",
+    proto = ":protocol_v1_proto",
     visibility = ["//visibility:public"],
 )
 
 go_library(
-    name = "core_go",
-    embed = [":macbox_core_v1_go_proto"],
-    importpath = "proto/macbox/core/v1",
+    name = "protocol_go",
+    embed = [":protocol_v1_go_proto"],
+    importpath = "proto/protocol/v1",
     visibility = ["//visibility:public"],
 )
 
 cpp_proto_library(
-    name = "core_cpp",
-    protos = [":v1"],
+    name = "protocol_cpp",
+    protos = [":protocol_v1_proto"],
+    visibility = ["//visibility:public"],
 )
