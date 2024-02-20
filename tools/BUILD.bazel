@@ -1,0 +1,4 @@
+alias(
+    name = "gopackagesdriver",
+    actual = "@rules_go//go/tools/gopackagesdriver",
+)

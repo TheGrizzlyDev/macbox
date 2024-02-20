@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "87c844fbc50c6981ac32fca5df4f98614ac0c0fc1557a8f4e0c4609b148c39bf",
+  "moduleFileHash": "3fc1246158a9ee3d928a81a576fc5509c5beb76aa9eceee046835da43534a9b9",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -33,7 +33,9 @@
             "line": 12,
             "column": 24
           },
-          "imports": {},
+          "imports": {
+            "org_golang_google_protobuf": "org_golang_google_protobuf"
+          },
           "devImports": [],
           "tags": [
             {
@@ -1728,8 +1730,9 @@
       "general": {
         "bzlTransitiveDigest": "zP01muRk4s4xWGK3gNPXOyDMQkOPsIhu99akeKWFFQ0=",
         "accumulatedFileDigests": {
-          "@@//:go.mod": "f4eaf57a8818c8f65d97080b063a4b6571588267ec3a1ff9e23169fb7390b137",
+          "@@//:go.mod": "553ba0d0bf662231386c0c8e1f93592c08baef64f92a5f24f27c45eef9de992a",
           "@@rules_go~0.44.2//:go.mod": "de22304b720f7f61350ec1c9739de6c0a1b1103fd22bfeb6e92c6c843ddc6d6e",
+          "@@//:go.sum": "0ef5074b7cd17de792961d4d22131316a41b25cde11e32249639de89e616414c",
           "@@gazelle~0.35.0//:go.mod": "48dc6e771c3028ee1c18b9ffc81e596fd5f6d7e0016c5ef280e30f2821f60473",
           "@@gazelle~0.35.0//:go.sum": "7c4460e8ecb5dd8691a51d4fa2e9e4751108b933636497ce46db499fc2e7a88d",
           "@@rules_go~0.44.2//:go.sum": "d56fdb19b21a5f12bcf625c49432371ac39c2def0f564098fbda107f7c080f40"
@@ -1811,9 +1814,9 @@
               "build_extra_args": [],
               "patches": [],
               "patch_args": [],
-              "sum": "h1:g0LDEJHgrBl9N9r17Ru3sqWhkIx2NB67okBHPwC7hs8=",
+              "sum": "h1:pPC6BG5ex8PDFnkbrGU3EixyhKcQ2aDuBS36lqK/C7I=",
               "replace": "",
-              "version": "v1.31.0"
+              "version": "v1.32.0"
             }
           },
           "com_github_bmatcuk_doublestar_v4": {
@@ -2000,6 +2003,7 @@
             "attributes": {
               "name": "gazelle~0.35.0~go_deps~bazel_gazelle_go_repository_config",
               "importpaths": {
+                "org_golang_google_protobuf": "google.golang.org/protobuf",
                 "com_github_gogo_protobuf": "github.com/gogo/protobuf",
                 "com_github_golang_mock": "github.com/golang/mock",
                 "com_github_golang_protobuf": "github.com/golang/protobuf",
@@ -2008,7 +2012,6 @@
                 "org_golang_google_genproto": "google.golang.org/genproto",
                 "org_golang_google_grpc": "google.golang.org/grpc",
                 "org_golang_google_grpc_cmd_protoc_gen_go_grpc": "google.golang.org/grpc/cmd/protoc-gen-go-grpc",
-                "org_golang_google_protobuf": "google.golang.org/protobuf",
                 "org_golang_x_mod": "golang.org/x/mod",
                 "org_golang_x_sys": "golang.org/x/sys",
                 "org_golang_x_text": "golang.org/x/text",
@@ -2098,7 +2101,9 @@
           }
         },
         "moduleExtensionMetadata": {
-          "explicitRootModuleDirectDeps": [],
+          "explicitRootModuleDirectDeps": [
+            "org_golang_google_protobuf"
+          ],
           "explicitRootModuleDirectDevDeps": [],
           "useAllRepos": "NO"
         }

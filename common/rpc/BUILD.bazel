@@ -1,0 +1,12 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "rpc",
+    srcs = ["unix_socket_rpc.go"],
+    importpath = "github.com/TheGrizzlyDev/macbox/common/rpc",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//proto/protocol/v1:protocol_v1_go_proto",
+        "@org_golang_google_protobuf//proto",
+    ],
+)

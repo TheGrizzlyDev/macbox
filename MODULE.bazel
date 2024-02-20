@@ -11,3 +11,7 @@ bazel_dep(name = "rules_proto_grpc_go", version = RULES_PROTO_VERSION)
 
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_mod = "go.mod")
+use_repo(
+    go_deps,
+    "org_golang_google_protobuf",
+)

@@ -1,7 +1,5 @@
-load("@rules_go//go:def.bzl", "go_library")
-load("@rules_go//proto:def.bzl", "go_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
-load("@rules_proto_grpc_cpp//:defs.bzl", "cpp_proto_library")
+load("@rules_go//proto:def.bzl", "go_proto_library")
 
 proto_library(
     name = "macbox_core_v1_proto",
@@ -12,19 +10,7 @@ proto_library(
 
 go_proto_library(
     name = "macbox_core_v1_go_proto",
-    importpath = "proto/macbox/core/v1",
+    importpath = "github.com/TheGrizzlyDev/macbox/proto/macbox/core/v1",
     proto = ":macbox_core_v1_proto",
     visibility = ["//visibility:public"],
-)
-
-go_library(
-    name = "core_go",
-    embed = [":macbox_core_v1_go_proto"],
-    importpath = "proto/macbox/core/v1",
-    visibility = ["//visibility:public"],
-)
-
-cpp_proto_library(
-    name = "core_cpp",
-    protos = [":macbox_core_v1_proto"],
 )
