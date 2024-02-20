@@ -7,6 +7,7 @@ proto_library(
     name = "protocol_v1_proto",
     srcs = ["rpc.proto"],
     visibility = ["//visibility:public"],
+    deps = ["@protobuf//:any_proto"],
 )
 
 go_proto_library(

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package macbox.manage.v1;
+
+message CreateSandboxRequest {
+    string socket_path = 1;
+}
+
+message CreateSandboxResponse {
+
+}
+
+message ExecRequest {
+    repeated string args = 1;
+}
+
+message ExecResponse {
+
+}

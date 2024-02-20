@@ -7,6 +7,7 @@ proto_library(
     name = "macbox_core_v1_proto",
     srcs = ["macbox.proto"],
     visibility = ["//visibility:public"],
+    deps = ["@protobuf//:any_proto"],
 )
 
 go_proto_library(
@@ -25,5 +26,5 @@ go_library(
 
 cpp_proto_library(
     name = "core_cpp",
-    protos = [":v1"],
+    protos = [":macbox_core_v1_proto"],
 )

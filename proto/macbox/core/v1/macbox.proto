@@ -2,10 +2,26 @@ syntax = "proto3";
 
 package macbox.core.v1;
 
+import "google/protobuf/any.proto";
+
+
+message ApiRequest {
+    int32 pid = 1;
+    int32 tid = 2;
+    optional google.protobuf.Any payload = 3;
+}
+
 message CwdRequest {
-    int32 pid = 2;
 }
 
 message CwdResponse {
     string path = 1;
+}
+
+message ResolvePathRequest {
+    string path = 1;
+}
+
+message ResolvePathResponse {
+    string real_path = 1;
 }

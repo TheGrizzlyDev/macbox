@@ -1,0 +1,23 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//proto:def.bzl", "go_proto_library")
+
+proto_library(
+    name = "macbox_manage_v1_proto",
+    srcs = ["manage.proto"],
+    visibility = ["//visibility:public"],
+)
+
+go_proto_library(
+    name = "macbox_manage_v1_go_proto",
+    importpath = "github.com/TheGrizzlyDev/macbox/proto/macbox/manage/v1",
+    proto = ":macbox_manage_v1_proto",
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "manage",
+    embed = [":macbox_manage_v1_go_proto"],
+    importpath = "github.com/TheGrizzlyDev/macbox/proto/macbox/manage/v1",
+    visibility = ["//visibility:public"],
+)
