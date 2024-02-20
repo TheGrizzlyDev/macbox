@@ -2,29 +2,7 @@ syntax = "proto3";
 
 package macbox.core.v1;
 
-message SandboxCreateRequest {}
-
-message SandboxCreateResponse {
-    string sandbox_id = 1;
-}
-
-message SandboxDestroyRequest {
-    string sandbox_id = 1;
-}
-
-message SandboxDestroyResponse {}
-
-message SandboxRunRequest {
-    string sandbox_id = 1;
-}
-
-message SandboxRunResponse {
-    string sandbox_id = 1;
-    int32 pid = 2;
-}
-
 message CwdRequest {
-    string sandbox_id = 1;
     int32 pid = 2;
 }
 
