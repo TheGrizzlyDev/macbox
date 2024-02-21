@@ -2,7 +2,9 @@ package rpc
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"os/signal"
@@ -65,7 +67,7 @@ func (u *UnixSocketRpcServer) Listen() error {
 	go func() {
 		<-c
 		os.Remove(u.socketPath)
-		os.Exit(1)
+		panic(err)
 	}()
 
 	for {
@@ -81,16 +83,22 @@ func (u *UnixSocketRpcServer) Listen() error {
 			for {
 				reader := bufio.NewReader(conn)
 				requestBytes, err := reader.ReadBytes('\n')
+				isEof := false
 				if err != nil {
-					os.Exit(1) // todo: propagate error instead
+					if errors.Is(err, io.EOF) {
+						isEof = true
+					} else {
+						panic(err) // todo: propagate error instead
+					}
 				}
-				fmt.Println(requestBytes)
 				request := rpcprotocol.Request{}
 				proto.Unmarshal(requestBytes, &request)
-				fmt.Println(request)
+				fmt.Println(request.Method)
+
+				if isEof {
+					return
+				}
 			}
-			// deserialize blob into `protocol.v1.Request`
-			// read method and payload accordingly
 		}(conn)
 	}
 }
