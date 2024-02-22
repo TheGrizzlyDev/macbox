@@ -8,3 +8,7 @@ message Request {
     string method = 1;
     optional google.protobuf.Any payload = 2;
 }
+
+message Response {
+    optional google.protobuf.Any payload = 1;
+}

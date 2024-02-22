@@ -3,7 +3,6 @@ package rpc
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"io"
 	"net"
 	"os"
@@ -13,19 +12,20 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	rpcprotocol "github.com/TheGrizzlyDev/macbox/proto/protocol/v1"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type RpcHandler interface {
-	Handle([]byte) ([]byte, error)
+	Handle(anypb.Any) (anypb.Any, error)
 }
 
-type rpcHnadlerFnType = func([]byte) ([]byte, error)
+type rpcHnadlerFnType = func(anypb.Any) (anypb.Any, error)
 
 type rpcHandlerFnWrapper struct {
 	fn rpcHnadlerFnType
 }
 
-func (r rpcHandlerFnWrapper) Handle(req []byte) ([]byte, error) {
+func (r rpcHandlerFnWrapper) Handle(req anypb.Any) (anypb.Any, error) {
 	return r.fn(req)
 }
 
@@ -71,13 +71,11 @@ func (u *UnixSocketRpcServer) Listen() error {
 	}()
 
 	for {
-		fmt.Println("Waiting for a connection")
 		conn, err := managementSocket.Accept()
 		if err != nil {
 			return err
 		}
 
-		fmt.Println("Opened connection")
 		go func(conn net.Conn) {
 			defer conn.Close()
 			for {
@@ -93,7 +91,23 @@ func (u *UnixSocketRpcServer) Listen() error {
 				}
 				request := rpcprotocol.Request{}
 				proto.Unmarshal(requestBytes, &request)
-				fmt.Println(request.Method)
+
+				var responsePayload anypb.Any
+				if handler, ok := u.handlers[request.Method]; ok {
+					responsePayload, err = handler.Handle(request.Payload)
+				} else {
+					responsePayload, err = u.fallback.Handle(request.Payload)
+				}
+				if err != nil {
+					panic(err) // todo: do something about it
+				}
+
+				response := rpcprotocol.Response{
+					Payload: &responsePayload,
+				}
+				resBytes, err := proto.Marshal(response)
+				conn.Write(resBytes)
+				conn.Write([]byte{'\n'})
 
 				if isEof {
 					return
