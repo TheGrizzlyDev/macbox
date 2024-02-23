@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <cstdarg>
 #include <dlfcn.h>
+#include <sys/socket.h>
 
 namespace libs {
     namespace {
@@ -23,7 +24,14 @@ namespace libs {
     }
 
     namespace libc {
+        LazyFn<int, int> close = {"close"};
+        LazyFn<int, int, const sockaddr*, socklen_t> connect = {"connect"};
         LazyFn<char*, char*, size_t> getcwd = {"getcwd"};
+        LazyFn<pid_t> getpid = {"getpid"};
+        LazyFn<pid_t> gettid = {"gettid"};
+        LazyFn<ssize_t, int, void*, size_t> read = {"read"};
         LazyFn<long, long, void*> syscall = {"syscall"};
+        LazyFn<int, int, int, int> socket = {"socket"};
+        LazyFn<ssize_t, int, const void*, size_t> write = {"write"};
     }
 }

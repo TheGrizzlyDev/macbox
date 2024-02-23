@@ -1,4 +1,8 @@
-// {
+{
+    "files.associations": {
+        "cstddef": "cpp"
+    }
+} // {
 //   "go.goroot": "${workspaceFolder}/bazel-${workspaceFolderBasename}/external/rules_go~0.44.2~go_sdk~go_default_sdk",
 //   "go.toolsEnvVars": {
 //     "GOPACKAGESDRIVER": "${workspaceFolder}/tools/gopackagesdriver.sh"
