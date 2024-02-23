@@ -3,11 +3,11 @@ syntax = "proto3";
 package macbox.manage.v1;
 
 message CreateSandboxRequest {
-    string socket_path = 1;
+    string socket = 1;
 }
 
 message CreateSandboxResponse {
-
+    string sandbox_uuid = 1;
 }
 
 message ExecRequest {

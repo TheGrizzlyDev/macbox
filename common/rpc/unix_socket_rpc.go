@@ -1,12 +1,13 @@
 package rpc
 
 import (
-	"bufio"
+	"encoding/binary"
 	"errors"
 	"io"
 	"net"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 
 	"google.golang.org/protobuf/proto"
@@ -16,16 +17,16 @@ import (
 )
 
 type RpcHandler interface {
-	Handle(anypb.Any) (anypb.Any, error)
+	Handle(proto.Message) (proto.Message, error)
 }
 
-type rpcHnadlerFnType = func(anypb.Any) (anypb.Any, error)
+type rpcHnadlerFnType = func(proto.Message) (proto.Message, error)
 
 type rpcHandlerFnWrapper struct {
 	fn rpcHnadlerFnType
 }
 
-func (r rpcHandlerFnWrapper) Handle(req anypb.Any) (anypb.Any, error) {
+func (r rpcHandlerFnWrapper) Handle(req proto.Message) (proto.Message, error) {
 	return r.fn(req)
 }
 
@@ -79,35 +80,49 @@ func (u *UnixSocketRpcServer) Listen() error {
 		go func(conn net.Conn) {
 			defer conn.Close()
 			for {
-				reader := bufio.NewReader(conn)
-				requestBytes, err := reader.ReadBytes('\n')
+				requestLengthBytes := make([]byte, 8)
+				if _, err := conn.Read(requestLengthBytes); err != nil {
+					panic(err)
+				}
+				requestLength := binary.BigEndian.Uint64(requestLengthBytes)
+				requestBytes := make([]byte, requestLength)
 				isEof := false
-				if err != nil {
+				if _, err = conn.Read(requestBytes); err != nil {
 					if errors.Is(err, io.EOF) {
 						isEof = true
 					} else {
 						panic(err) // todo: propagate error instead
 					}
 				}
+
 				request := rpcprotocol.Request{}
 				proto.Unmarshal(requestBytes, &request)
 
-				var responsePayload anypb.Any
+				var responsePayload proto.Message
 				if handler, ok := u.handlers[request.Method]; ok {
 					responsePayload, err = handler.Handle(request.Payload)
-				} else {
+				} else if u.fallback != nil {
 					responsePayload, err = u.fallback.Handle(request.Payload)
 				}
 				if err != nil {
 					panic(err) // todo: do something about it
 				}
 
+				responsePayloadAsAny := &anypb.Any{}
+				anypb.MarshalFrom(responsePayloadAsAny, responsePayload, proto.MarshalOptions{})
+
 				response := rpcprotocol.Response{
-					Payload: &responsePayload,
+					Payload: responsePayloadAsAny,
 				}
-				resBytes, err := proto.Marshal(response)
+				resBytes, err := proto.Marshal(&response)
+				if err != nil {
+					panic(err)
+				}
+
+				responseLength := make([]byte, 8)
+				binary.BigEndian.PutUint64(responseLength, uint64(len(resBytes)))
+				conn.Write(responseLength)
 				conn.Write(resBytes)
-				conn.Write([]byte{'\n'})
 
 				if isEof {
 					return
@@ -115,4 +130,66 @@ func (u *UnixSocketRpcServer) Listen() error {
 			}
 		}(conn)
 	}
+}
+
+type UnixSocketRpcClient struct {
+	socketPath string
+	connection net.Conn
+	m          sync.Mutex
+}
+
+func NewUnixSocketRpcClient(socket string) *UnixSocketRpcClient {
+	return &UnixSocketRpcClient{
+		socketPath: socket,
+	}
+}
+
+func (u *UnixSocketRpcClient) Send(method string, msg proto.Message) (proto.Message, error) {
+	u.m.Lock()
+	defer u.m.Unlock()
+	if u.connection == nil {
+		conn, err := net.Dial("unix", u.socketPath)
+		if err != nil {
+			return nil, err
+		}
+		u.connection = conn
+	}
+
+	msgAsAny := &anypb.Any{}
+	anypb.MarshalFrom(msgAsAny, msg, proto.MarshalOptions{})
+	request := rpcprotocol.Request{
+		Method:  method,
+		Payload: msgAsAny,
+	}
+
+	requestBytes, err := proto.Marshal(&request)
+	if err != nil {
+		return nil, err
+	}
+
+	requestLength := make([]byte, 8)
+	binary.BigEndian.PutUint64(requestLength, uint64(len(requestBytes)))
+	u.connection.Write(requestLength)
+	u.connection.Write(requestBytes)
+
+	responseLengthBytes := make([]byte, 8)
+	if _, err := u.connection.Read(responseLengthBytes); err != nil {
+		panic(err)
+	}
+	responseLength := binary.BigEndian.Uint64(responseLengthBytes)
+	responseBytes := make([]byte, responseLength)
+
+	if _, err = u.connection.Read(responseBytes); err != nil {
+		if errors.Is(err, io.EOF) {
+			if err = u.connection.Close(); err != nil {
+				return nil, err
+			}
+		} else {
+			return nil, err
+		}
+	}
+
+	response := rpcprotocol.Response{}
+	proto.Unmarshal(responseBytes, &response)
+	return response.Payload, nil
 }
