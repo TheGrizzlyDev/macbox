@@ -35,6 +35,47 @@ func run(args []string) error {
 			return err
 		}
 		fmt.Println(response.SandboxUuid)
+	case "exec":
+		cmd := flag.NewFlagSet("exec", flag.ContinueOnError)
+		socket := cmd.String("socket", "", "")
+		sandboxId := cmd.String("sandbox_id", "", "")
+		if err := cmd.Parse(args[1:]); err != nil {
+			cmd.Usage()
+			return err
+		}
+
+		responseAsAny, err := rpc.NewUnixSocketRpcClient(*socket).Send("exec", &rpcmanage.ExecRequest{
+			Args:        cmd.Args(),
+			SandboxUuid: *sandboxId,
+		})
+		if err != nil {
+			return err
+		}
+		response := &rpcmanage.ExecResponse{}
+		if err = responseAsAny.UnmarshalTo(response); err != nil {
+			return err
+		}
+		fmt.Println(response)
+	case "stop":
+		cmd := flag.NewFlagSet("stop", flag.ContinueOnError)
+		socket := cmd.String("socket", "", "")
+		sandboxId := cmd.String("sandbox_id", "", "")
+		if err := cmd.Parse(args[1:]); err != nil {
+			cmd.Usage()
+			return err
+		}
+
+		responseAsAny, err := rpc.NewUnixSocketRpcClient(*socket).Send("stop", &rpcmanage.StopRequest{
+			SandboxUuid: *sandboxId,
+		})
+		if err != nil {
+			return err
+		}
+		response := &rpcmanage.StopResponse{}
+		if err = responseAsAny.UnmarshalTo(response); err != nil {
+			return err
+		}
+		fmt.Println(response)
 	}
 
 	return nil

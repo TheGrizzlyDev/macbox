@@ -21,7 +21,7 @@ func (u *UnixSocketServer) Listen(ctx context.Context) error {
 }
 
 func (u *UnixSocketServer) Exec(ctx context.Context, args []string) (*ExecResponse, error) {
-	fmt.Println("start", args)
+	fmt.Println("exec", args)
 	return nil, nil
 }
 

@@ -16,16 +16,16 @@ import (
 )
 
 type RpcHandler interface {
-	Handle(proto.Message) (proto.Message, error)
+	Handle(*anypb.Any) (proto.Message, error)
 }
 
-type rpcHnadlerFnType = func(proto.Message) (proto.Message, error)
+type rpcHnadlerFnType = func(*anypb.Any) (proto.Message, error)
 
 type rpcHandlerFnWrapper struct {
 	fn rpcHnadlerFnType
 }
 
-func (r rpcHandlerFnWrapper) Handle(req proto.Message) (proto.Message, error) {
+func (r rpcHandlerFnWrapper) Handle(req *anypb.Any) (proto.Message, error) {
 	return r.fn(req)
 }
 

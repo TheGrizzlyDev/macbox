@@ -10,9 +10,19 @@ message CreateSandboxResponse {
 }
 
 message ExecRequest {
-    repeated string args = 1;
+    string sandbox_uuid = 1;
+    repeated string args = 2;
 }
 
 message ExecResponse {
+    int64 pid = 1;
+    optional string stdout_path = 2;
+    optional string stderr_path = 3;
+}
 
+message StopRequest {
+    string sandbox_uuid = 1;
+}
+
+message StopResponse {
 }
