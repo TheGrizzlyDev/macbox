@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "3fc1246158a9ee3d928a81a576fc5509c5beb76aa9eceee046835da43534a9b9",
+  "moduleFileHash": "e13e87329f34b8f1118752256e94bf201541dc07cbb5e6ee489c44bbd792562d",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -34,7 +34,8 @@
             "column": 24
           },
           "imports": {
-            "org_golang_google_protobuf": "org_golang_google_protobuf"
+            "org_golang_google_protobuf": "org_golang_google_protobuf",
+            "com_github_google_uuid": "com_github_google_uuid"
           },
           "devImports": [],
           "tags": [
@@ -1730,9 +1731,9 @@
       "general": {
         "bzlTransitiveDigest": "zP01muRk4s4xWGK3gNPXOyDMQkOPsIhu99akeKWFFQ0=",
         "accumulatedFileDigests": {
-          "@@//:go.mod": "553ba0d0bf662231386c0c8e1f93592c08baef64f92a5f24f27c45eef9de992a",
+          "@@//:go.mod": "5a92a9e62467b86726819ebf35dcf1d6a5ca784751cebdd815063a127e685116",
           "@@rules_go~0.44.2//:go.mod": "de22304b720f7f61350ec1c9739de6c0a1b1103fd22bfeb6e92c6c843ddc6d6e",
-          "@@//:go.sum": "0ef5074b7cd17de792961d4d22131316a41b25cde11e32249639de89e616414c",
+          "@@//:go.sum": "bdf6fcfd4d5564c6b92bdcb4127a98ecc809e8abb224f5263266fc04ed89f3a9",
           "@@gazelle~0.35.0//:go.mod": "48dc6e771c3028ee1c18b9ffc81e596fd5f6d7e0016c5ef280e30f2821f60473",
           "@@gazelle~0.35.0//:go.sum": "7c4460e8ecb5dd8691a51d4fa2e9e4751108b933636497ce46db499fc2e7a88d",
           "@@rules_go~0.44.2//:go.sum": "d56fdb19b21a5f12bcf625c49432371ac39c2def0f564098fbda107f7c080f40"
@@ -1801,6 +1802,22 @@
               "sum": "h1:rNBFJjBCOgVr9pWD7rs/knKL4FRTKgpZmsRfV214zcA=",
               "replace": "",
               "version": "v1.3.0"
+            }
+          },
+          "com_github_google_uuid": {
+            "bzlFile": "@@gazelle~0.35.0//internal:go_repository.bzl",
+            "ruleClassName": "go_repository",
+            "attributes": {
+              "name": "gazelle~0.35.0~go_deps~com_github_google_uuid",
+              "importpath": "github.com/google/uuid",
+              "build_directives": [],
+              "build_file_generation": "auto",
+              "build_extra_args": [],
+              "patches": [],
+              "patch_args": [],
+              "sum": "h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=",
+              "replace": "",
+              "version": "v1.6.0"
             }
           },
           "org_golang_google_protobuf": {
@@ -2004,6 +2021,7 @@
               "name": "gazelle~0.35.0~go_deps~bazel_gazelle_go_repository_config",
               "importpaths": {
                 "org_golang_google_protobuf": "google.golang.org/protobuf",
+                "com_github_google_uuid": "github.com/google/uuid",
                 "com_github_gogo_protobuf": "github.com/gogo/protobuf",
                 "com_github_golang_mock": "github.com/golang/mock",
                 "com_github_golang_protobuf": "github.com/golang/protobuf",
@@ -2102,7 +2120,8 @@
         },
         "moduleExtensionMetadata": {
           "explicitRootModuleDirectDeps": [
-            "org_golang_google_protobuf"
+            "org_golang_google_protobuf",
+            "com_github_google_uuid"
           ],
           "explicitRootModuleDirectDevDeps": [],
           "useAllRepos": "NO"

@@ -1,0 +1,18 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "manage",
+    srcs = [
+        "manager.go",
+        "server.go",
+        "socket_server.go",
+    ],
+    importpath = "github.com/TheGrizzlyDev/macbox/sandbox/manage",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//common/rpc",
+        "//proto/macbox/manage/v1:macbox_manage_v1_go_proto",
+        "@com_github_google_uuid//:uuid",
+        "@org_golang_google_protobuf//proto",
+    ],
+)

@@ -7,6 +7,10 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/TheGrizzlyDev/macbox/cli",
     visibility = ["//visibility:private"],
+    deps = [
+        "//common/rpc",
+        "//proto/macbox/manage/v1:macbox_manage_v1_go_proto",
+    ],
 )
 
 go_binary(

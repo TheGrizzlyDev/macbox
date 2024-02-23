@@ -1,14 +1,13 @@
 package rpc
 
 import (
+	"context"
 	"encoding/binary"
 	"errors"
 	"io"
 	"net"
 	"os"
-	"os/signal"
 	"sync"
-	"syscall"
 
 	"google.golang.org/protobuf/proto"
 
@@ -57,18 +56,15 @@ func (u *UnixSocketRpcServer) AddFallbackHandler(handler RpcHandler) *UnixSocket
 	return u
 }
 
-func (u *UnixSocketRpcServer) Listen() error {
+func (u *UnixSocketRpcServer) Listen(ctx context.Context) error {
 	managementSocket, err := net.Listen("unix", u.socketPath)
 	if err != nil {
 		return err
 	}
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
-		<-c
+		<-ctx.Done()
 		os.Remove(u.socketPath)
-		panic(err)
 	}()
 
 	for {
@@ -82,6 +78,9 @@ func (u *UnixSocketRpcServer) Listen() error {
 			for {
 				requestLengthBytes := make([]byte, 8)
 				if _, err := conn.Read(requestLengthBytes); err != nil {
+					if errors.Is(err, io.EOF) {
+						return
+					}
 					panic(err)
 				}
 				requestLength := binary.BigEndian.Uint64(requestLengthBytes)
@@ -144,7 +143,7 @@ func NewUnixSocketRpcClient(socket string) *UnixSocketRpcClient {
 	}
 }
 
-func (u *UnixSocketRpcClient) Send(method string, msg proto.Message) (proto.Message, error) {
+func (u *UnixSocketRpcClient) Send(method string, msg proto.Message) (*anypb.Any, error) {
 	u.m.Lock()
 	defer u.m.Unlock()
 	if u.connection == nil {

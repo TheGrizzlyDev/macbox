@@ -1,14 +1,13 @@
 package main
 
 import (
+	"context"
 	"flag"
-	"fmt"
 	"os"
-	"time"
+	"os/signal"
+	"syscall"
 
-	"github.com/TheGrizzlyDev/macbox/common/rpc"
-	rpcmanage "github.com/TheGrizzlyDev/macbox/proto/macbox/manage/v1"
-	"google.golang.org/protobuf/proto"
+	"github.com/TheGrizzlyDev/macbox/sandbox/manage"
 )
 
 var (
@@ -27,27 +26,32 @@ func run(args []string) error {
 		return nil
 	}
 
-	managementServer := rpc.NewUnixSocketRpcServer(*socketPath)
-	managementServer.AddHandler("create", rpc.RpcHandlerFn(func(request proto.Message) (proto.Message, error) {
-		fmt.Println(request)
-		return &rpcmanage.CreateSandboxResponse{
-			SandboxUuid: "blablabla",
-		}, nil
-	}))
+	ctx, cancel := context.WithCancel(context.Background())
 
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM, os.Interrupt, os.Kill)
 	go func() {
-		time.Sleep(time.Second)
-		client := rpc.NewUnixSocketRpcClient(*socketPath)
-		response, err := client.Send("create", &rpcmanage.CreateSandboxRequest{Socket: "/tmp/bla"})
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(response)
+		<-c
+		cancel()
+		os.Exit(1)
 	}()
 
-	if err := managementServer.Listen(); err != nil {
+	server, err := manage.NewManagerServer(func(id string) (manage.Server, error) {
+		sandboxServer, err := manage.NewUnixSocketServer("")
+		if err != nil {
+			return nil, err
+		}
+		go func() {
+			sandboxServer.Listen(ctx)
+		}()
+		return sandboxServer, nil
+	})
+
+	if err != nil {
 		return err
 	}
+
+	server.ListenToUnixSocket(ctx, *socketPath)
 
 	return nil
 }

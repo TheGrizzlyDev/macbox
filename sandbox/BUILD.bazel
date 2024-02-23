@@ -7,11 +7,7 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/TheGrizzlyDev/macbox/sandbox",
     visibility = ["//visibility:private"],
-    deps = [
-        "//common/rpc",
-        "//proto/macbox/manage/v1:macbox_manage_v1_go_proto",
-        "@org_golang_google_protobuf//proto",
-    ],
+    deps = ["//sandbox/manage"],
 )
 
 go_binary(

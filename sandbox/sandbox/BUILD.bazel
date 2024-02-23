@@ -1,0 +1,12 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "sandbox",
+    srcs = [
+        "server.go",
+        "socket_server.go",
+    ],
+    importpath = "github.com/TheGrizzlyDev/macbox/sandbox/sandbox",
+    visibility = ["//visibility:public"],
+    deps = ["@org_golang_google_protobuf//proto"],
+)

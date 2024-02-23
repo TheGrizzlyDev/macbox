@@ -3,7 +3,6 @@ syntax = "proto3";
 package macbox.manage.v1;
 
 message CreateSandboxRequest {
-    string socket = 1;
 }
 
 message CreateSandboxResponse {
