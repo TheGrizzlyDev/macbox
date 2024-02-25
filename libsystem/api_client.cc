@@ -1,6 +1,7 @@
 #include "api_client.hh"
 #include "libs.hh"
 #include "proto/protocol/v1/rpc.pb.h"
+#include "proto/macbox/core/v1/macbox.pb.h"
 
 namespace api {
 namespace client {
@@ -35,15 +36,18 @@ void Connection::send(std::string method, google::protobuf::Message& request, T*
     libs::libc::write(this->socket, lengthAsBytes, 8);
     libs::libc::write(this->socket, serializedRequest.c_str(), serailizedRequestLength);
 
-    char *responseLengthBuf;
+    char *responseLengthBuf = new char[8];
     libs::libc::read(this->socket, responseLengthBuf, 8);
     size_t responseLength = *static_cast<size_t*>(static_cast<void*>(responseLengthBuf));
-    char *responseBuf;
+    char *responseBuf = new char[responseLength];
     libs::libc::read(this->socket, responseBuf, responseLength);
-    
+
     protocol::v1::Response responseWrapper;
     responseWrapper.ParseFromArray(responseBuf, responseLength);
     responseWrapper.payload().UnpackTo(response);
+
+    delete [] responseLengthBuf;
+    delete [] responseBuf;
 
     // TODO: this code is cursed, it doesn't check a single damn error. Cringe.
 }
@@ -68,7 +72,10 @@ ApiClient& ApiClient::the() {
 }
 
 std::string ApiClient::getcwd() {
-    return "/bla/bla";
+    macbox::core::v1::CwdRequest request;
+    macbox::core::v1::CwdResponse response;
+    cm->getConnection()->send("cwd", request, &response);
+    return response.path();
 }
 
 };
