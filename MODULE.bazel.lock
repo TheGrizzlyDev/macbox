@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "e13e87329f34b8f1118752256e94bf201541dc07cbb5e6ee489c44bbd792562d",
+  "moduleFileHash": "46308c944fc52d0cdf2ce8d855d05a42e563a4d75d7c115b601d53f327060588",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -30,7 +30,7 @@
           "usingModule": "<root>",
           "location": {
             "file": "@@//:MODULE.bazel",
-            "line": 12,
+            "line": 7,
             "column": 24
           },
           "imports": {
@@ -47,7 +47,7 @@
               "devDependency": false,
               "location": {
                 "file": "@@//:MODULE.bazel",
-                "line": 13,
+                "line": 8,
                 "column": 18
               }
             }
@@ -62,9 +62,7 @@
         "rules_go": "rules_go@0.44.2",
         "gazelle": "gazelle@0.35.0",
         "protobuf": "protobuf@23.1",
-        "rules_proto_grpc": "rules_proto_grpc@5.0.0-alpha2",
-        "rules_proto_grpc_cpp": "rules_proto_grpc_cpp@5.0.0-alpha2",
-        "rules_proto_grpc_go": "rules_proto_grpc_go@5.0.0-alpha2",
+        "hedron_compile_commands": "hedron_compile_commands@_",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
       }
@@ -213,7 +211,7 @@
         "bazel_features": "bazel_features@1.1.1",
         "bazel_skylib": "bazel_skylib@1.5.0",
         "platforms": "platforms@0.0.8",
-        "rules_proto": "rules_proto@5.3.0-21.7",
+        "rules_proto": "rules_proto@4.0.0",
         "com_google_protobuf": "protobuf@23.1",
         "gazelle": "gazelle@0.35.0",
         "bazel_tools": "bazel_tools@_",
@@ -338,7 +336,7 @@
         "bazel_skylib": "bazel_skylib@1.5.0",
         "com_google_protobuf": "protobuf@23.1",
         "io_bazel_rules_go": "rules_go@0.44.2",
-        "rules_proto": "rules_proto@5.3.0-21.7",
+        "rules_proto": "rules_proto@4.0.0",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
       },
@@ -428,7 +426,7 @@
         "bazel_skylib": "bazel_skylib@1.5.0",
         "rules_python": "rules_python@0.10.2",
         "rules_cc": "rules_cc@0.0.9",
-        "rules_proto": "rules_proto@5.3.0-21.7",
+        "rules_proto": "rules_proto@4.0.0",
         "rules_java": "rules_java@7.1.0",
         "rules_pkg": "rules_pkg@0.7.0",
         "platforms": "platforms@0.0.8",
@@ -463,176 +461,78 @@
         }
       }
     },
-    "rules_proto_grpc@5.0.0-alpha2": {
-      "name": "rules_proto_grpc",
-      "version": "5.0.0-alpha2",
-      "key": "rules_proto_grpc@5.0.0-alpha2",
-      "repoName": "rules_proto_grpc",
-      "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [
-        "//protoc:protoc_toolchain"
-      ],
-      "extensionUsages": [],
-      "deps": {
-        "bazel_skylib": "bazel_skylib@1.5.0",
-        "protobuf": "protobuf@23.1",
-        "rules_cc": "rules_cc@0.0.9",
-        "rules_proto": "rules_proto@5.3.0-21.7",
-        "bazel_tools": "bazel_tools@_",
-        "local_config_platform": "local_config_platform@_"
-      },
-      "repoSpec": {
-        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
-        "ruleClassName": "http_archive",
-        "attributes": {
-          "name": "rules_proto_grpc~5.0.0-alpha2",
-          "urls": [
-            "https://github.com/rules-proto-grpc/rules_proto_grpc/releases/download/5.0.0-alpha2/rules_proto_grpc-5.0.0-alpha2.tar.gz"
-          ],
-          "integrity": "sha256-S8TbEoY2mkpTH0oZmtpUMNP4Z1yo57CEDL0ltrMF5JU=",
-          "strip_prefix": "rules_proto_grpc-5.0.0-alpha2",
-          "remote_patches": {},
-          "remote_patch_strip": 0
-        }
-      }
-    },
-    "rules_proto_grpc_cpp@5.0.0-alpha2": {
-      "name": "rules_proto_grpc_cpp",
-      "version": "5.0.0-alpha2",
-      "key": "rules_proto_grpc_cpp@5.0.0-alpha2",
-      "repoName": "rules_proto_grpc_cpp",
-      "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [],
-      "extensionUsages": [],
-      "deps": {
-        "grpc": "grpc@1.48.1.bcr.2",
-        "protobuf": "protobuf@23.1",
-        "rules_cc": "rules_cc@0.0.9",
-        "rules_proto_grpc": "rules_proto_grpc@5.0.0-alpha2",
-        "bazel_tools": "bazel_tools@_",
-        "local_config_platform": "local_config_platform@_"
-      },
-      "repoSpec": {
-        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
-        "ruleClassName": "http_archive",
-        "attributes": {
-          "name": "rules_proto_grpc_cpp~5.0.0-alpha2",
-          "urls": [
-            "https://github.com/rules-proto-grpc/rules_proto_grpc/releases/download/5.0.0-alpha2/rules_proto_grpc_cpp-5.0.0-alpha2.tar.gz"
-          ],
-          "integrity": "sha256-4fK7oTayaH5lTV1moUfqc4oCVnfKASQ+pV6UNunUo0w=",
-          "strip_prefix": "rules_proto_grpc_cpp-5.0.0-alpha2",
-          "remote_patches": {},
-          "remote_patch_strip": 0
-        }
-      }
-    },
-    "rules_proto_grpc_go@5.0.0-alpha2": {
-      "name": "rules_proto_grpc_go",
-      "version": "5.0.0-alpha2",
-      "key": "rules_proto_grpc_go@5.0.0-alpha2",
-      "repoName": "rules_proto_grpc_go",
+    "hedron_compile_commands@_": {
+      "name": "hedron_compile_commands",
+      "version": "",
+      "key": "hedron_compile_commands@_",
+      "repoName": "hedron_compile_commands",
       "executionPlatformsToRegister": [],
       "toolchainsToRegister": [],
       "extensionUsages": [
         {
-          "extensionBzlFile": "@gazelle//:extensions.bzl",
-          "extensionName": "go_deps",
-          "usingModule": "rules_proto_grpc_go@5.0.0-alpha2",
+          "extensionBzlFile": "@hedron_compile_commands//:workspace_setup.bzl",
+          "extensionName": "hedron_compile_commands_extension",
+          "usingModule": "hedron_compile_commands@_",
           "location": {
-            "file": "https://bcr.bazel.build/modules/rules_proto_grpc_go/5.0.0-alpha2/MODULE.bazel",
-            "line": 11,
-            "column": 24
+            "file": "@@hedron_compile_commands~override//:MODULE.bazel",
+            "line": 3,
+            "column": 18
           },
-          "imports": {
-            "org_golang_google_genproto_googleapis_rpc": "org_golang_google_genproto_googleapis_rpc",
-            "org_golang_google_grpc": "org_golang_google_grpc",
-            "org_golang_google_grpc_cmd_protoc_gen_go_grpc": "org_golang_google_grpc_cmd_protoc_gen_go_grpc",
-            "org_golang_google_protobuf": "org_golang_google_protobuf"
-          },
+          "imports": {},
           "devImports": [],
-          "tags": [
-            {
-              "tagName": "module",
-              "attributeValues": {
-                "path": "google.golang.org/protobuf",
-                "sum": "h1:g0LDEJHgrBl9N9r17Ru3sqWhkIx2NB67okBHPwC7hs8=",
-                "version": "v1.31.0"
-              },
-              "devDependency": false,
-              "location": {
-                "file": "https://bcr.bazel.build/modules/rules_proto_grpc_go/5.0.0-alpha2/MODULE.bazel",
-                "line": 12,
-                "column": 15
-              }
-            },
-            {
-              "tagName": "module",
-              "attributeValues": {
-                "path": "google.golang.org/grpc",
-                "sum": "h1:OL+Vz23DTtrrldqHK49FUOPHyY75rvFqJfXC84NYW58=",
-                "version": "v1.58.1"
-              },
-              "devDependency": false,
-              "location": {
-                "file": "https://bcr.bazel.build/modules/rules_proto_grpc_go/5.0.0-alpha2/MODULE.bazel",
-                "line": 17,
-                "column": 15
-              }
-            },
-            {
-              "tagName": "module",
-              "attributeValues": {
-                "path": "google.golang.org/grpc/cmd/protoc-gen-go-grpc",
-                "sum": "h1:rNBFJjBCOgVr9pWD7rs/knKL4FRTKgpZmsRfV214zcA=",
-                "version": "v1.3.0"
-              },
-              "devDependency": false,
-              "location": {
-                "file": "https://bcr.bazel.build/modules/rules_proto_grpc_go/5.0.0-alpha2/MODULE.bazel",
-                "line": 22,
-                "column": 15
-              }
-            },
-            {
-              "tagName": "module",
-              "attributeValues": {
-                "path": "google.golang.org/genproto/googleapis/rpc",
-                "sum": "h1:Jyp0Hsi0bmHXG6k9eATXoYtjd6e2UzZ1SCn/wIupY14=",
-                "version": "v0.0.0-20231106174013-bbf56f31fb17"
-              },
-              "devDependency": false,
-              "location": {
-                "file": "https://bcr.bazel.build/modules/rules_proto_grpc_go/5.0.0-alpha2/MODULE.bazel",
-                "line": 27,
-                "column": 15
-              }
-            }
-          ],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@hedron_compile_commands//:workspace_setup_transitive.bzl",
+          "extensionName": "hedron_compile_commands_extension",
+          "usingModule": "hedron_compile_commands@_",
+          "location": {
+            "file": "@@hedron_compile_commands~override//:MODULE.bazel",
+            "line": 4,
+            "column": 19
+          },
+          "imports": {},
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@hedron_compile_commands//:workspace_setup_transitive_transitive.bzl",
+          "extensionName": "hedron_compile_commands_extension",
+          "usingModule": "hedron_compile_commands@_",
+          "location": {
+            "file": "@@hedron_compile_commands~override//:MODULE.bazel",
+            "line": 5,
+            "column": 20
+          },
+          "imports": {},
+          "devImports": [],
+          "tags": [],
+          "hasDevUseExtension": false,
+          "hasNonDevUseExtension": true
+        },
+        {
+          "extensionBzlFile": "@hedron_compile_commands//:workspace_setup_transitive_transitive_transitive.bzl",
+          "extensionName": "hedron_compile_commands_extension",
+          "usingModule": "hedron_compile_commands@_",
+          "location": {
+            "file": "@@hedron_compile_commands~override//:MODULE.bazel",
+            "line": 6,
+            "column": 21
+          },
+          "imports": {},
+          "devImports": [],
+          "tags": [],
           "hasDevUseExtension": false,
           "hasNonDevUseExtension": true
         }
       ],
       "deps": {
-        "gazelle": "gazelle@0.35.0",
-        "rules_go": "rules_go@0.44.2",
-        "rules_proto_grpc": "rules_proto_grpc@5.0.0-alpha2",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
-      },
-      "repoSpec": {
-        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
-        "ruleClassName": "http_archive",
-        "attributes": {
-          "name": "rules_proto_grpc_go~5.0.0-alpha2",
-          "urls": [
-            "https://github.com/rules-proto-grpc/rules_proto_grpc/releases/download/5.0.0-alpha2/rules_proto_grpc_go-5.0.0-alpha2.tar.gz"
-          ],
-          "integrity": "sha256-F64ixJ4e9WLtgZzDAwo4qbwkr7i0vS6jSiF8Ez+/TNI=",
-          "strip_prefix": "rules_proto_grpc_go-5.0.0-alpha2",
-          "remote_patches": {},
-          "remote_patch_strip": 0
-        }
       }
     },
     "bazel_tools@_": {
@@ -760,7 +660,7 @@
         "rules_cc": "rules_cc@0.0.9",
         "rules_java": "rules_java@7.1.0",
         "rules_license": "rules_license@0.0.7",
-        "rules_proto": "rules_proto@5.3.0-21.7",
+        "rules_proto": "rules_proto@4.0.0",
         "rules_python": "rules_python@0.10.2",
         "platforms": "platforms@0.0.8",
         "com_google_protobuf": "protobuf@23.1",
@@ -857,17 +757,16 @@
         }
       }
     },
-    "rules_proto@5.3.0-21.7": {
+    "rules_proto@4.0.0": {
       "name": "rules_proto",
-      "version": "5.3.0-21.7",
-      "key": "rules_proto@5.3.0-21.7",
+      "version": "4.0.0",
+      "key": "rules_proto@4.0.0",
       "repoName": "rules_proto",
       "executionPlatformsToRegister": [],
       "toolchainsToRegister": [],
       "extensionUsages": [],
       "deps": {
         "bazel_skylib": "bazel_skylib@1.5.0",
-        "com_google_protobuf": "protobuf@23.1",
         "rules_cc": "rules_cc@0.0.9",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
@@ -876,13 +775,15 @@
         "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
         "ruleClassName": "http_archive",
         "attributes": {
-          "name": "rules_proto~5.3.0-21.7",
+          "name": "rules_proto~4.0.0",
           "urls": [
-            "https://github.com/bazelbuild/rules_proto/archive/refs/tags/5.3.0-21.7.tar.gz"
+            "https://github.com/bazelbuild/rules_proto/archive/refs/tags/4.0.0.zip"
           ],
-          "integrity": "sha256-3D+yBqLLNEG0heseQjFlsjEjWh6psDG0Qzz3vB+kYN0=",
-          "strip_prefix": "rules_proto-5.3.0-21.7",
-          "remote_patches": {},
+          "integrity": "sha256-Lr5z6xyuRA19pNtRYMGjKaynwQpck4H/lwYyVjyhoq4=",
+          "strip_prefix": "rules_proto-4.0.0",
+          "remote_patches": {
+            "https://bcr.bazel.build/modules/rules_proto/4.0.0/patches/module_dot_bazel.patch": "sha256-MclJO7tIAM2ElDAmscNId9pKTpOuDGHgVlW/9VBOIp0="
+          },
           "remote_patch_strip": 0
         }
       }
@@ -1075,7 +976,7 @@
         "platforms": "platforms@0.0.8",
         "rules_cc": "rules_cc@0.0.9",
         "bazel_skylib": "bazel_skylib@1.5.0",
-        "rules_proto": "rules_proto@5.3.0-21.7",
+        "rules_proto": "rules_proto@4.0.0",
         "rules_license": "rules_license@0.0.7",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
@@ -1220,7 +1121,7 @@
       ],
       "deps": {
         "bazel_skylib": "bazel_skylib@1.5.0",
-        "rules_proto": "rules_proto@5.3.0-21.7",
+        "rules_proto": "rules_proto@4.0.0",
         "com_google_protobuf": "protobuf@23.1",
         "com_google_absl": "abseil-cpp@20230802.0.bcr.1",
         "rules_pkg": "rules_pkg@0.7.0",
@@ -1364,85 +1265,6 @@
         }
       }
     },
-    "grpc@1.48.1.bcr.2": {
-      "name": "grpc",
-      "version": "1.48.1.bcr.2",
-      "key": "grpc@1.48.1.bcr.2",
-      "repoName": "com_github_grpc_grpc",
-      "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [],
-      "extensionUsages": [
-        {
-          "extensionBzlFile": "@com_github_grpc_grpc//bazel:grpc_deps.bzl",
-          "extensionName": "grpc_repo_deps_ext",
-          "usingModule": "grpc@1.48.1.bcr.2",
-          "location": {
-            "file": "https://bcr.bazel.build/modules/grpc/1.48.1.bcr.2/MODULE.bazel",
-            "line": 20,
-            "column": 35
-          },
-          "imports": {
-            "com_envoyproxy_protoc_gen_validate": "com_envoyproxy_protoc_gen_validate",
-            "com_google_googleapis": "com_google_googleapis",
-            "com_github_cncf_udpa": "com_github_cncf_udpa",
-            "envoy_api": "envoy_api"
-          },
-          "devImports": [],
-          "tags": [],
-          "hasDevUseExtension": false,
-          "hasNonDevUseExtension": true
-        },
-        {
-          "extensionBzlFile": "@com_github_grpc_grpc//bazel:grpc_extra_deps.bzl",
-          "extensionName": "grpc_extra_deps_ext",
-          "usingModule": "grpc@1.48.1.bcr.2",
-          "location": {
-            "file": "https://bcr.bazel.build/modules/grpc/1.48.1.bcr.2/MODULE.bazel",
-            "line": 30,
-            "column": 36
-          },
-          "imports": {
-            "com_google_googleapis_imports": "com_google_googleapis_imports"
-          },
-          "devImports": [],
-          "tags": [],
-          "hasDevUseExtension": false,
-          "hasNonDevUseExtension": true
-        }
-      ],
-      "deps": {
-        "bazel_skylib": "bazel_skylib@1.5.0",
-        "boringssl": "boringssl@0.0.0-20211025-d4f1ab9",
-        "com_github_cares_cares": "c-ares@1.15.0",
-        "com_google_absl": "abseil-cpp@20230802.0.bcr.1",
-        "com_google_protobuf": "protobuf@23.1",
-        "com_googlesource_code_re2": "re2@2021-09-01",
-        "rules_proto": "rules_proto@5.3.0-21.7",
-        "upb": "upb@0.0.0-20230516-61a97ef",
-        "zlib": "zlib@1.3",
-        "rules_java": "rules_java@7.1.0",
-        "io_bazel_rules_go": "rules_go@0.44.2",
-        "bazel_tools": "bazel_tools@_",
-        "local_config_platform": "local_config_platform@_"
-      },
-      "repoSpec": {
-        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
-        "ruleClassName": "http_archive",
-        "attributes": {
-          "name": "grpc~1.48.1.bcr.2",
-          "urls": [
-            "https://github.com/grpc/grpc/archive/refs/tags/v1.48.1.tar.gz"
-          ],
-          "integrity": "sha256-MgNmZl0ZAnzah7I2jAOTkAajfgOIv9EJHI0qlvvJO9g=",
-          "strip_prefix": "grpc-1.48.1",
-          "remote_patches": {
-            "https://bcr.bazel.build/modules/grpc/1.48.1.bcr.2/patches/adopt_bzlmod.patch": "sha256-B/5lYHGEcW4ljbqxPb1D5QSIRUN4kxodUZDKItAbdnE=",
-            "https://bcr.bazel.build/modules/grpc/1.48.1.bcr.2/patches/protocol-compiler-alias-for-bind.patch": "sha256-MiO46C+EvMs1sAbZIHR9uFHNeUGCprBGCELLUA6OUHo="
-          },
-          "remote_patch_strip": 1
-        }
-      }
-    },
     "apple_support@1.5.0": {
       "name": "apple_support",
       "version": "1.5.0",
@@ -1519,99 +1341,6 @@
           "strip_prefix": "",
           "remote_patches": {
             "https://bcr.bazel.build/modules/stardoc/0.5.1/patches/module_dot_bazel.patch": "sha256-UAULCuTpJE7SG0YrR9XLjMfxMRmbP+za3uW9ONZ5rjI="
-          },
-          "remote_patch_strip": 0
-        }
-      }
-    },
-    "boringssl@0.0.0-20211025-d4f1ab9": {
-      "name": "boringssl",
-      "version": "0.0.0-20211025-d4f1ab9",
-      "key": "boringssl@0.0.0-20211025-d4f1ab9",
-      "repoName": "boringssl",
-      "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [],
-      "extensionUsages": [],
-      "deps": {
-        "rules_cc": "rules_cc@0.0.9",
-        "bazel_tools": "bazel_tools@_",
-        "local_config_platform": "local_config_platform@_"
-      },
-      "repoSpec": {
-        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
-        "ruleClassName": "http_archive",
-        "attributes": {
-          "name": "boringssl~0.0.0-20211025-d4f1ab9",
-          "urls": [
-            "https://github.com/google/boringssl/archive/d4f1ab983065e4616319f59c723c7b9870021fae.tar.gz"
-          ],
-          "integrity": "sha256-M26QowTRWQe0pyMgTvDHwMabsdfxLqYP6MMwUWZjC/I=",
-          "strip_prefix": "boringssl-d4f1ab983065e4616319f59c723c7b9870021fae",
-          "remote_patches": {
-            "https://bcr.bazel.build/modules/boringssl/0.0.0-20211025-d4f1ab9/patches/module_dot_bazel.patch": "sha256-TJNetd16OGSjVWvmBAL4iZM/uatmXvjR0AsjHrPRGUA="
-          },
-          "remote_patch_strip": 0
-        }
-      }
-    },
-    "c-ares@1.15.0": {
-      "name": "c-ares",
-      "version": "1.15.0",
-      "key": "c-ares@1.15.0",
-      "repoName": "c-ares",
-      "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [],
-      "extensionUsages": [],
-      "deps": {
-        "bazel_skylib": "bazel_skylib@1.5.0",
-        "com_github_grpc_grpc": "grpc@1.48.1.bcr.2",
-        "platforms": "platforms@0.0.8",
-        "bazel_tools": "bazel_tools@_",
-        "local_config_platform": "local_config_platform@_"
-      },
-      "repoSpec": {
-        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
-        "ruleClassName": "http_archive",
-        "attributes": {
-          "name": "c-ares~1.15.0",
-          "urls": [
-            "https://github.com/c-ares/c-ares/releases/download/cares-1_15_0/c-ares-1.15.0.tar.gz"
-          ],
-          "integrity": "sha256-bNuXhx8pMFMMl963z1yPpL5aCwLHzqbnx2Z2cqOdaFI=",
-          "strip_prefix": "c-ares-1.15.0",
-          "remote_patches": {
-            "https://bcr.bazel.build/modules/c-ares/1.15.0/patches/add_build_file.patch": "sha256-+SUCFxBIkR0GE9FRFPps/e6AnA9cQIGANBHK14UAKwQ=",
-            "https://bcr.bazel.build/modules/c-ares/1.15.0/patches/module_dot_bazel.patch": "sha256-SVQeSrnvd7IishMhmg8S3PK6/6bbt1IqwVEqKDfdYgk="
-          },
-          "remote_patch_strip": 0
-        }
-      }
-    },
-    "re2@2021-09-01": {
-      "name": "re2",
-      "version": "2021-09-01",
-      "key": "re2@2021-09-01",
-      "repoName": "re2",
-      "executionPlatformsToRegister": [],
-      "toolchainsToRegister": [],
-      "extensionUsages": [],
-      "deps": {
-        "rules_cc": "rules_cc@0.0.9",
-        "bazel_tools": "bazel_tools@_",
-        "local_config_platform": "local_config_platform@_"
-      },
-      "repoSpec": {
-        "bzlFile": "@bazel_tools//tools/build_defs/repo:http.bzl",
-        "ruleClassName": "http_archive",
-        "attributes": {
-          "name": "re2~2021-09-01",
-          "urls": [
-            "https://github.com/google/re2/archive/refs/tags/2021-09-01.zip"
-          ],
-          "integrity": "sha256-739ELobFx96SqV7QdeOUNre0fFKk5+5jV1IU7slG/C8=",
-          "strip_prefix": "re2-2021-09-01",
-          "remote_patches": {
-            "https://bcr.bazel.build/modules/re2/2021-09-01/patches/module_dot_bazel.patch": "sha256-uLpoNV5fETcQxOqvD9PtPv4CHYhetfPSkPIJPXoLXcg="
           },
           "remote_patch_strip": 0
         }
@@ -2040,7 +1769,6 @@
                 "com_github_pmezard_go_difflib": "github.com/pmezard/go-difflib",
                 "org_golang_x_sync": "golang.org/x/sync",
                 "org_golang_x_tools_go_vcs": "golang.org/x/tools/go/vcs",
-                "org_golang_google_genproto_googleapis_rpc": "google.golang.org/genproto/googleapis/rpc",
                 "@rules_go~0.44.2": "github.com/bazelbuild/rules_go",
                 "@gazelle~0.35.0": "github.com/bazelbuild/bazel-gazelle"
               },
@@ -2064,9 +1792,9 @@
               "build_extra_args": [],
               "patches": [],
               "patch_args": [],
-              "sum": "h1:OL+Vz23DTtrrldqHK49FUOPHyY75rvFqJfXC84NYW58=",
+              "sum": "h1:pnP7OclFFFgFi4VHQDQDaoXUVauOFyktqTsqqgzFKbc=",
               "replace": "",
-              "version": "v1.58.1"
+              "version": "v1.40.1"
             }
           },
           "org_golang_x_sys": {
@@ -2083,22 +1811,6 @@
               "sum": "h1:h48lPFYpsTvQJZF4EKyI4aLHaev3CxivZmv7yZig9pc=",
               "replace": "",
               "version": "v0.15.0"
-            }
-          },
-          "org_golang_google_genproto_googleapis_rpc": {
-            "bzlFile": "@@gazelle~0.35.0//internal:go_repository.bzl",
-            "ruleClassName": "go_repository",
-            "attributes": {
-              "name": "gazelle~0.35.0~go_deps~org_golang_google_genproto_googleapis_rpc",
-              "importpath": "google.golang.org/genproto/googleapis/rpc",
-              "build_directives": [],
-              "build_file_generation": "auto",
-              "build_extra_args": [],
-              "patches": [],
-              "patch_args": [],
-              "sum": "h1:Jyp0Hsi0bmHXG6k9eATXoYtjd6e2UzZ1SCn/wIupY14=",
-              "replace": "",
-              "version": "v0.0.0-20231106174013-bbf56f31fb17"
             }
           },
           "com_github_google_go_cmp": {

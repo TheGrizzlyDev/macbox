@@ -29,6 +29,7 @@ namespace libs {
         LazyFn<char*, char*, size_t> getcwd = {"getcwd"};
         LazyFn<pid_t> getpid = {"getpid"};
         LazyFn<pid_t> gettid = {"gettid"};
+        LazyFn<size_t> malloc = {"malloc"};
         LazyFn<ssize_t, int, void*, size_t> read = {"read"};
         LazyFn<long, long, void*> syscall = {"syscall"};
         LazyFn<int, int, int, int> socket = {"socket"};

@@ -1,7 +1,12 @@
 {
     "files.associations": {
         "cstddef": "cpp"
-    }
+    },
+    "clangd.arguments": [
+        "--header-insertion=never",
+        "--compile-commands-dir=${workspaceFolder}/",
+        "--query-driver=**"
+    ]
 } // {
 //   "go.goroot": "${workspaceFolder}/bazel-${workspaceFolderBasename}/external/rules_go~0.44.2~go_sdk~go_default_sdk",
 //   "go.toolsEnvVars": {

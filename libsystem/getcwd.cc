@@ -1,9 +1,14 @@
-#include <algorithm>
-#include <cstring>
-#include <cstdlib>
 #include "getcwd.hh"
+#include "api_client.hh"
 #include "libs.hh"
 
 char* getcwd(char* buf, size_t len) {
-    return libs::libc::getcwd(buf, len);
+    std::string cwd { api::client::ApiClient::the().getcwd() };
+    if (buf == nullptr) {
+        char* result = static_cast<char*>(malloc(sizeof(char*)));
+        strncpy(result, cwd.c_str(), cwd.size());
+        return result;
+    }
+    strncpy(buf, cwd.c_str(), len);
+    return buf;
 }
