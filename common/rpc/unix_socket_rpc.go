@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"os"
@@ -84,6 +85,7 @@ func (u *UnixSocketRpcServer) Listen(ctx context.Context) error {
 					panic(err)
 				}
 				requestLength := binary.BigEndian.Uint64(requestLengthBytes)
+				fmt.Printf("Request length is: %d\n", requestLength)
 				requestBytes := make([]byte, requestLength)
 				isEof := false
 				if _, err = conn.Read(requestBytes); err != nil {

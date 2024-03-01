@@ -3,6 +3,8 @@ package manage
 import (
 	"context"
 	"fmt"
+
+	"github.com/TheGrizzlyDev/macbox/sandbox/sandbox"
 )
 
 type UnixSocketServer struct {
@@ -16,8 +18,8 @@ func NewUnixSocketServer(socket string) (*UnixSocketServer, error) {
 }
 
 func (u *UnixSocketServer) Listen(ctx context.Context) error {
-	fmt.Println("listening...")
-	return nil
+	server := sandbox.NewApiServer(u.socket)
+	return server.Listen(ctx)
 }
 
 func (u *UnixSocketServer) Exec(ctx context.Context, args []string) (*ExecResponse, error) {

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -37,11 +38,13 @@ func run(args []string) error {
 	}()
 
 	server, err := manage.NewManagerServer(func(id string) (manage.Server, error) {
-		sandboxServer, err := manage.NewUnixSocketServer("")
+		apiSocketPath := fmt.Sprintf("/tmp/macbox.%s.sock", id)
+		sandboxServer, err := manage.NewUnixSocketServer(apiSocketPath)
 		if err != nil {
 			return nil, err
 		}
 		go func() {
+			fmt.Printf("Listening on '%s' for sandbox '%s'\n", apiSocketPath, id)
 			sandboxServer.Listen(ctx)
 		}()
 		return sandboxServer, nil
