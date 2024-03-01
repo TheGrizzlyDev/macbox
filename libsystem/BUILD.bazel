@@ -8,7 +8,7 @@ cc_library(
     deps = [
         "//proto/macbox/core/v1:macbox_core_v1_cpp_proto",
         "//proto/protocol/v1:protocol_v1_cpp_proto",
-    ]
+    ],
 )
 
 cc_shared_library(

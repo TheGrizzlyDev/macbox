@@ -9,8 +9,7 @@ namespace client {
 class Connection {
 public:
     Connection(std::string socket) : socket_path{socket} {}
-    template<typename T>
-    void send(std::string, google::protobuf::Message&, T*);
+    std::unique_ptr<google::protobuf::Any> send(std::string, google::protobuf::Message&);
 private:
     std::string socket_path;
     int socket;
