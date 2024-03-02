@@ -18,3 +18,5 @@ git_override(
     remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
     commit = "204aa593e002cbd177d30f11f54cff3559110bb9",
 )
+
+bazel_dep(name = "rules_zig", version = "0.3.0")
