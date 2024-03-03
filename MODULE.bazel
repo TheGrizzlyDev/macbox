@@ -20,3 +20,6 @@ git_override(
 )
 
 bazel_dep(name = "rules_zig", version = "0.3.0")
+bazel_dep(name = "rules_proto_grpc", version = "5.0.0-alpha2")
+bazel_dep(name = "rules_proto_grpc_c", version = "5.0.0-alpha2")
+bazel_dep(name = "upb", version = "0.0.0-20230516-61a97ef")

@@ -1,6 +1,6 @@
 load("@rules_go//proto:def.bzl", "go_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
-load("@rules_proto_grpc//cpp:defs.bzl", "cpp_proto_library")
+load("@rules_proto_grpc_c//:defs.bzl", "c_proto_library")
 
 proto_library(
     name = "macbox_core_v1_proto",
@@ -16,8 +16,14 @@ go_proto_library(
     visibility = ["//visibility:public"],
 )
 
-cpp_proto_library(
-    name = "macbox_core_v1_cpp_proto",
-    protos = [":macbox_core_v1_proto"],
+c_proto_library(
+    name = "macbox_core_v1_c_proto",
+    protos = [
+        ":macbox_core_v1_proto",
+        "@protobuf//:any_proto",
+    ],
     visibility = ["//visibility:public"],
+    deps = [
+        "@upb//:message_accessors",
+    ],
 )
