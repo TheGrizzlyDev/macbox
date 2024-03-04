@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/TheGrizzlyDev/macbox/common/rpc"
+	"google.golang.org/protobuf/proto"
 
 	rpcmanage "github.com/TheGrizzlyDev/macbox/proto/macbox/manage/v1"
 )
@@ -26,12 +27,13 @@ func run(args []string) error {
 			cmd.Usage()
 			return err
 		}
-		responseAsAny, err := rpc.NewUnixSocketRpcClient(*socket).Send("create", &rpcmanage.CreateSandboxRequest{})
+		responseBytes, err := rpc.NewUnixSocketRpcClient(*socket).Send("create", &rpcmanage.CreateSandboxRequest{})
 		if err != nil {
 			return err
 		}
-		response := &rpcmanage.CreateSandboxResponse{}
-		if err = responseAsAny.UnmarshalTo(response); err != nil {
+		response := rpcmanage.CreateSandboxResponse{}
+
+		if err = proto.Unmarshal(responseBytes, &response); err != nil {
 			return err
 		}
 		fmt.Println(response.SandboxUuid)
@@ -44,15 +46,16 @@ func run(args []string) error {
 			return err
 		}
 
-		responseAsAny, err := rpc.NewUnixSocketRpcClient(*socket).Send("exec", &rpcmanage.ExecRequest{
+		responseBytes, err := rpc.NewUnixSocketRpcClient(*socket).Send("exec", &rpcmanage.ExecRequest{
 			Args:        cmd.Args(),
 			SandboxUuid: *sandboxId,
 		})
 		if err != nil {
 			return err
 		}
-		response := &rpcmanage.ExecResponse{}
-		if err = responseAsAny.UnmarshalTo(response); err != nil {
+
+		response := rpcmanage.ExecResponse{}
+		if err = proto.Unmarshal(responseBytes, &response); err != nil {
 			return err
 		}
 		fmt.Println(response)
@@ -65,14 +68,15 @@ func run(args []string) error {
 			return err
 		}
 
-		responseAsAny, err := rpc.NewUnixSocketRpcClient(*socket).Send("stop", &rpcmanage.StopRequest{
+		responseBytes, err := rpc.NewUnixSocketRpcClient(*socket).Send("stop", &rpcmanage.StopRequest{
 			SandboxUuid: *sandboxId,
 		})
 		if err != nil {
 			return err
 		}
-		response := &rpcmanage.StopResponse{}
-		if err = responseAsAny.UnmarshalTo(response); err != nil {
+
+		response := rpcmanage.StopResponse{}
+		if err = proto.Unmarshal(responseBytes, &response); err != nil {
 			return err
 		}
 		fmt.Println(response)

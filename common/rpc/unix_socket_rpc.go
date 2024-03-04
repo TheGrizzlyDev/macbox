@@ -13,20 +13,19 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	rpcprotocol "github.com/TheGrizzlyDev/macbox/proto/protocol/v1"
-	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type RpcHandler interface {
-	Handle(*anypb.Any) (proto.Message, error)
+	Handle([]byte) (proto.Message, error)
 }
 
-type rpcHnadlerFnType = func(*anypb.Any) (proto.Message, error)
+type rpcHnadlerFnType = func([]byte) (proto.Message, error)
 
 type rpcHandlerFnWrapper struct {
 	fn rpcHnadlerFnType
 }
 
-func (r rpcHandlerFnWrapper) Handle(req *anypb.Any) (proto.Message, error) {
+func (r rpcHandlerFnWrapper) Handle(req []byte) (proto.Message, error) {
 	return r.fn(req)
 }
 
@@ -109,11 +108,13 @@ func (u *UnixSocketRpcServer) Listen(ctx context.Context) error {
 					panic(err) // todo: do something about it
 				}
 
-				responsePayloadAsAny := &anypb.Any{}
-				anypb.MarshalFrom(responsePayloadAsAny, responsePayload, proto.MarshalOptions{})
+				responsePayloadSerialised, err := proto.Marshal(responsePayload)
+				if err != nil {
+					panic(err) // todo: do something about it
+				}
 
 				response := rpcprotocol.Response{
-					Payload: responsePayloadAsAny,
+					Payload: responsePayloadSerialised,
 				}
 				resBytes, err := proto.Marshal(&response)
 				if err != nil {
@@ -145,7 +146,7 @@ func NewUnixSocketRpcClient(socket string) *UnixSocketRpcClient {
 	}
 }
 
-func (u *UnixSocketRpcClient) Send(method string, msg proto.Message) (*anypb.Any, error) {
+func (u *UnixSocketRpcClient) Send(method string, msg proto.Message) ([]byte, error) {
 	u.m.Lock()
 	defer u.m.Unlock()
 	if u.connection == nil {
@@ -156,11 +157,14 @@ func (u *UnixSocketRpcClient) Send(method string, msg proto.Message) (*anypb.Any
 		u.connection = conn
 	}
 
-	msgAsAny := &anypb.Any{}
-	anypb.MarshalFrom(msgAsAny, msg, proto.MarshalOptions{})
+	msgSerialised, err := proto.Marshal(msg)
+	if err != nil {
+		return nil, err
+	}
+
 	request := rpcprotocol.Request{
 		Method:  method,
-		Payload: msgAsAny,
+		Payload: msgSerialised,
 	}
 
 	requestBytes, err := proto.Marshal(&request)
@@ -191,6 +195,9 @@ func (u *UnixSocketRpcClient) Send(method string, msg proto.Message) (*anypb.Any
 	}
 
 	response := rpcprotocol.Response{}
-	proto.Unmarshal(responseBytes, &response)
+	if err = proto.Unmarshal(responseBytes, &response); err != nil {
+		return nil, err
+	}
+
 	return response.Payload, nil
 }

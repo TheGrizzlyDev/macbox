@@ -8,6 +8,7 @@ go_library(
     importpath = "github.com/TheGrizzlyDev/macbox/cli",
     visibility = ["//visibility:private"],
     deps = [
+        "@org_golang_google_protobuf//proto",
         "//common/rpc",
         "//proto/macbox/manage/v1:macbox_manage_v1_go_proto",
     ],

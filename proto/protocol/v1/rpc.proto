@@ -2,13 +2,11 @@ syntax = "proto3";
 
 package protocol.v1;
 
-import "google/protobuf/any.proto";
-
 message Request {
     string method = 1;
-    optional google.protobuf.Any payload = 2;
+    optional bytes payload = 2;
 }
 
 message Response {
-    optional google.protobuf.Any payload = 1;
+    optional bytes payload = 1;
 }

@@ -10,7 +10,6 @@ import (
 	"github.com/TheGrizzlyDev/macbox/common/rpc"
 	rpcmanage "github.com/TheGrizzlyDev/macbox/proto/macbox/manage/v1"
 	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type sandboxCreator = func(string) (Server, error)
@@ -67,7 +66,7 @@ func NewManagerServer(create_sandbox_fn sandboxCreator) (*ManagerServer, error) 
 
 func (m *ManagerServer) ListenToUnixSocket(ctx context.Context, socket string) error {
 	managementServer := rpc.NewUnixSocketRpcServer(socket)
-	managementServer.AddHandler("create", rpc.RpcHandlerFn(func(request *anypb.Any) (proto.Message, error) {
+	managementServer.AddHandler("create", rpc.RpcHandlerFn(func(requestBytes []byte) (proto.Message, error) {
 		if id, err := m.m.CreateSandbox(); err != nil {
 			return nil, err
 		} else {
@@ -76,9 +75,9 @@ func (m *ManagerServer) ListenToUnixSocket(ctx context.Context, socket string) e
 			}, nil
 		}
 	}))
-	managementServer.AddHandler("exec", rpc.RpcHandlerFn(func(requestAsAny *anypb.Any) (proto.Message, error) {
-		request := &rpcmanage.ExecRequest{}
-		requestAsAny.UnmarshalTo(request)
+	managementServer.AddHandler("exec", rpc.RpcHandlerFn(func(requestBytes []byte) (proto.Message, error) {
+		request := rpcmanage.ExecRequest{}
+		proto.Unmarshal(requestBytes, &request)
 		sandbox, ok := m.m.GetSandbox(request.SandboxUuid)
 		if !ok {
 			return nil, fmt.Errorf("sandbox does not exit")
@@ -90,9 +89,9 @@ func (m *ManagerServer) ListenToUnixSocket(ctx context.Context, socket string) e
 		fmt.Println(response)
 		return &rpcmanage.ExecResponse{}, nil
 	}))
-	managementServer.AddHandler("stop", rpc.RpcHandlerFn(func(requestAsAny *anypb.Any) (proto.Message, error) {
-		request := &rpcmanage.StopRequest{}
-		requestAsAny.UnmarshalTo(request)
+	managementServer.AddHandler("stop", rpc.RpcHandlerFn(func(requestBytes []byte) (proto.Message, error) {
+		request := rpcmanage.StopRequest{}
+		proto.Unmarshal(requestBytes, &request)
 		m.m.StopSandbox(ctx, request.SandboxUuid)
 		return &rpcmanage.StopResponse{}, nil
 	}))
