@@ -23,6 +23,8 @@ fn upb_string_view_from_string(s: []const u8) proto.upb_StringView {
 }
 
 pub fn new_arena() ?*proto.upb_Arena {
+    // TODO: will need to be removed in favour of an allocator that uses the next occurrence of malloc
+    // as soon as we override malloc
     return proto.upb_Arena_New();
 }
 

@@ -8,6 +8,10 @@ message ApiRequest {
     optional bytes payload = 3;
 }
 
+message ApiResponse {
+    optional bytes payload = 1;
+}
+
 message CwdResponse {
     string path = 1;
 }
