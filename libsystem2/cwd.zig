@@ -4,10 +4,11 @@ const protobuf = @import("./protobuf.zig");
 const errno = @import("./errno.zig");
 
 export fn getcwd(buf: [*]u8, len: usize) ?[*]u8 {
-    return libs.libc.getcwd(buf, len) catch |err| switch (err) {
+    const handle = libs.dlsym("getcwd") catch |err| switch (err) {
         error.SymbolNotFound => {
             errno.set_errno(.AccessPermissionDenied);
             return null;
         },
     };
+    return @call(.never_tail, handle, .{ buf, len });
 }
