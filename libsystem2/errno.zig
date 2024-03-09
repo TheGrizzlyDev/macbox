@@ -7,7 +7,7 @@ const Error = enum {
 };
 
 pub fn set_errno(err: Error) void {
-    c.set_errno(switch (err) {
+    c.macbox_set_errno(switch (err) {
         .AccessPermissionDenied => c.EACCES,
     });
 }

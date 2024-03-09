@@ -3,6 +3,7 @@ const system = std.os.system;
 
 const c = @cImport({
     @cInclude("unistd.h");
+    @cInclude("sys/socket.h");
 });
 
 const RTLD_NEXT = @as(*anyopaque, @ptrFromInt(@as(usize, @bitCast(@as(isize, @as(c_int, -1))))));
