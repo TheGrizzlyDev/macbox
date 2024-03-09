@@ -1,5 +1,5 @@
 const c = @cImport({
-    @cInclude("libsystem2/errno.h");
+    @cInclude("libsystem/errno.h");
 });
 
 const Error = enum {

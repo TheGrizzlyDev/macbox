@@ -4,7 +4,7 @@ const allocator = @import("./allocator.zig");
 const protobuf = @import("./protobuf.zig");
 
 const c = @cImport({
-    @cInclude("libsystem2/api.h");
+    @cInclude("libsystem/api.h");
 });
 
 const Connection = struct {
