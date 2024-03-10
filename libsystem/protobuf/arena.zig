@@ -2,14 +2,13 @@ const std = @import("std");
 
 const c = @cImport({
     @cInclude("upb/mem/arena.h");
-    // @cInclude("upb/mem/alloc.h");
 });
 
-const ArenaCreationError = error{
+pub const ArenaCreationError = error{
     failed_to_create,
 };
 
-const AllocatorBackedUpbArena = extern struct {
+pub const AllocatorBackedUpbArena = extern struct {
     const Self = @This();
     func: *const anyopaque,
     allocator: *const std.mem.Allocator,
