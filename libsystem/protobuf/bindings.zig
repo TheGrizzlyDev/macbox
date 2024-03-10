@@ -101,6 +101,23 @@ fn bindToProto(comptime fullyQualifiedName: []const u8) type {
 
             return ProtobufErrors.CannotSerialize;
         }
+
+        pub fn get(self: *Self, comptime field: []const u8) blk: {
+            break :blk switch (@typeInfo(@TypeOf(@field(c, std.fmt.comptimePrint("{s}_{s}", .{ upbNamespace, field }))))) {
+                .Fn => |fnTypeInfo| fnTypeInfo.return_type orelse anyopaque,
+                else => @compileError(std.fmt.comptimePrint("'{s}' is not a field of this proto type", .{field})),
+            };
+        } {
+            return @call(.auto, @field(c, std.fmt.comptimePrint("{s}_{s}", .{ upbNamespace, field })), .{self.msg});
+        }
+
+        pub fn set(self: *Self, comptime field: []const u8, value: anytype) void {
+            return @call(.auto, @field(c, std.fmt.comptimePrint("{s}_set_{s}", .{ upbNamespace, field })), .{ self.msg, value });
+        }
+
+        pub fn clear(self: *Self, comptime field: []const u8) void {
+            return @call(.auto, @field(c, std.fmt.comptimePrint("{s}_clear_{s}", .{ upbNamespace, field })), .{self.msg});
+        }
     };
 }
 
@@ -108,81 +125,14 @@ test "bindToProto" {
     const DynamicApiRequest = bindToProto("macbox.core.v1.ApiRequest");
     var req = try DynamicApiRequest.init(&std.testing.allocator);
     defer req.deinit();
+    req.set("pid", 123);
     var serialized = try req.serialize(&std.testing.allocator);
     defer serialized.deinit();
     var deserialized = try DynamicApiRequest.deserialize(&std.testing.allocator, serialized.slice);
     defer deserialized.deinit();
+    const pid = deserialized.get("pid");
+    try std.testing.expect(123 == pid);
+    deserialized.clear("pid");
+    const clearedPid = deserialized.get("pid");
+    try std.testing.expect(0 == clearedPid);
 }
-
-// pub const ApiRequest = struct {
-//     const Self = @This();
-//     msg: *c.macbox_core_v1_ApiRequest,
-//     arena: *arena.AllocatorBackedUpbArena,
-
-//     pub fn init(allocator: *const std.mem.Allocator) !Self {
-//         var newArena = try arena.AllocatorBackedUpbArena.init(allocator);
-//         errdefer newArena.deinit();
-//         if (c.macbox_core_v1_ApiRequest_new(arena)) |msg| {
-//             return .{ .msg = msg, .arena = newArena };
-//         }
-//         return ProtobufErrors.CannotAllocate;
-//     }
-
-//     pub fn deserialize(allocator: *const std.mem.Allocator, ser: []const u8) ProtobufErrors!Self {
-//         var newArena = try arena.AllocatorBackedUpbArena.init(allocator);
-//         errdefer newArena.deinit();
-//         if (c.macbox_core_v1_ApiRequest_parse(ser.ptr, ser.len, arena)) |msg| {
-//             return .{ .msg = msg, .arena = newArena };
-//         }
-//         return ProtobufErrors.CannotParse;
-//     }
-
-//     pub fn deinit(self: *Self) void {
-//         self.arena.deinit();
-//     }
-
-//     pub fn serialize(self: *Self) []const u8 {
-//         var size: usize = 0;
-//         const str = c.macbox_core_v1_ApiRequest_serialize(self.msg, self.arena, &size);
-
-//         return str[0..size];
-//     }
-
-//     pub fn set_tid(self: *Self, tid: ?i32) void {
-//         if (tid) |_tid| {
-//             c.macbox_core_v1_ApiRequest_set_tid(self.msg, _tid);
-//         } else {
-//             c.macbox_core_v1_ApiRequest_clear_tid(self.msg);
-//         }
-//     }
-
-//     pub fn get_tid(self: *Self) i32 {
-//         return c.macbox_core_v1_ApiRequest_tid(self.msg);
-//     }
-
-//     pub fn set_pid(self: *Self, pid: ?i32) void {
-//         if (pid) |_pid| {
-//             c.macbox_core_v1_ApiRequest_set_pid(self.msg, _pid);
-//         } else {
-//             c.macbox_core_v1_ApiRequest_clear_pid(self.msg);
-//         }
-//     }
-
-//     pub fn get_pid(self: *Self) i32 {
-//         return c.macbox_core_v1_ApiRequest_pid(self.msg);
-//     }
-
-//     pub fn set_payload(self: *Self, payload: ?[]const u8) void {
-//         if (payload) |_payload| {
-//             c.macbox_core_v1_ApiRequest_set_payload(self.msg, strings.upbStringViewFromString(_payload));
-//         } else {
-//             c.macbox_core_v1_ApiRequest_clear_payload(
-//                 self.msg,
-//             );
-//         }
-//     }
-
-//     pub fn get_payload(self: *Self) ?[]const u8 {
-//         return strings.upbStringViewToString(c.macbox_core_v1_ApiRequest_payload(self.msg));
-//     }
-// };
