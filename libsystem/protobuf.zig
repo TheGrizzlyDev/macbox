@@ -26,11 +26,15 @@ fn upb_string_view_from_string(s: []const u8) proto.upb_StringView {
     };
 }
 
-pub fn new_arena() ?*proto.upb_Arena {
-    // TODO: will need to be removed in favour of an allocator that uses the next occurrence of malloc
-    // as soon as we override malloc
-    return proto.upb_Arena_New();
-}
+const UpbAllocBlock = struct {
+    const Self = @This();
+    buf: [*c]u8,
+    len: usize,
+
+    pub fn toSlice(self: Self) []u8 {
+        return self.buf[0..self.len];
+    }
+};
 
 const AllocatorBackedUpbArena = extern struct {
     const Self = @This();
@@ -62,9 +66,18 @@ const AllocatorBackedUpbArena = extern struct {
         std.debug.print("(ptr='{*}', old_size={}, size={})\n", .{ ptr, old_size, size });
         if (ptr == null) {
             std.debug.print("ALLOC\n", .{});
-            const mem = self.allocator.alloc(u8, size) catch return null;
-            return mem.ptr;
+            var block = self.allocator.create(UpbAllocBlock) catch return null;
+            const buf = self.allocator.alloc(u8, size) catch {
+                self.allocator.destroy(block);
+                return null;
+            };
+            block.buf = buf.ptr;
+            block.len = buf.len;
+            return block.buf;
         }
+        const block = @fieldParentPtr(UpbAllocBlock, "buf", &ptr);
+        std.debug.print("block: {any}\n", .{block});
+        return null;
         // const old_mem: []u8 = &ptr;
         // if (size == 0) {
         //     std.debug.print("FREE\n", .{});
