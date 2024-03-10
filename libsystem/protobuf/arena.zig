@@ -1,4 +1,5 @@
 const std = @import("std");
+const strings = @import("strings.zig");
 const proto = @cImport({
     @cInclude("proto/macbox/core/v1/macbox.upb.h");
 });
@@ -11,20 +12,6 @@ const ProtobufErrors = error{
 const ArenaCreationError = error{
     failed_to_create,
 };
-
-fn upb_string_view_to_string(u: proto.upb_StringView) ?[]const u8 {
-    if (u.data) |str| {
-        return str[0..u.size];
-    }
-    return null;
-}
-
-fn upb_string_view_from_string(s: []const u8) proto.upb_StringView {
-    return .{
-        .size = s.len,
-        .data = s.ptr,
-    };
-}
 
 const AllocatorBackedUpbArena = extern struct {
     const Self = @This();
@@ -137,7 +124,7 @@ pub const ApiRequest = struct {
 
     pub fn set_payload(self: *Self, payload: ?[]const u8) void {
         if (payload) |_payload| {
-            proto.macbox_core_v1_ApiRequest_set_payload(self.msg, upb_string_view_from_string(_payload));
+            proto.macbox_core_v1_ApiRequest_set_payload(self.msg, strings.upbStringViewFromString(_payload));
         } else {
             proto.macbox_core_v1_ApiRequest_clear_payload(
                 self.msg,
@@ -146,6 +133,6 @@ pub const ApiRequest = struct {
     }
 
     pub fn get_payload(self: *Self) ?[]const u8 {
-        return upb_string_view_to_string(proto.macbox_core_v1_ApiRequest_payload(self.msg));
+        return strings.upbStringViewToString(proto.macbox_core_v1_ApiRequest_payload(self.msg));
     }
 };
