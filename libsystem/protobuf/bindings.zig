@@ -1,9 +1,6 @@
 const std = @import("std");
 const arena = @import("arena.zig");
 const strings = @import("strings.zig");
-const c = @cImport({
-    @cInclude("proto/macbox/core/v1/macbox.upb.h");
-});
 
 const ProtobufErrors = error{
     CannotAllocate,
@@ -25,7 +22,7 @@ fn SliceWithUpbArena(comptime T: type) type {
     };
 }
 
-fn bindToProto(comptime fullyQualifiedName: []const u8) type {
+fn bindToProto(comptime c: type, comptime fullyQualifiedName: []const u8) type {
     const upbNamespace: []const u8 = blk: {
         var ns: []const u8 = &[_]u8{};
         for (fullyQualifiedName) |char| {
@@ -122,7 +119,10 @@ fn bindToProto(comptime fullyQualifiedName: []const u8) type {
 }
 
 test "bindToProto" {
-    const DynamicApiRequest = bindToProto("macbox.core.v1.ApiRequest");
+    const c = @cImport({
+        @cInclude("proto/macbox/core/v1/macbox.upb.h");
+    });
+    const DynamicApiRequest = bindToProto(c, "macbox.core.v1.ApiRequest");
     var req = try DynamicApiRequest.init(&std.testing.allocator);
     defer req.deinit();
     req.set("pid", 123);
