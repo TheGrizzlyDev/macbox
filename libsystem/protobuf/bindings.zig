@@ -22,10 +22,10 @@ fn SliceWithUpbArena(comptime T: type) type {
     };
 }
 
-fn bindToProto(comptime c: type, comptime fullyQualifiedName: []const u8) type {
+fn bindToProto(comptime c: type, comptime fully_qualified_name: []const u8) type {
     const upbNamespace: []const u8 = blk: {
         var ns: []const u8 = &[_]u8{};
-        for (fullyQualifiedName) |char| {
+        for (fully_qualified_name) |char| {
             if ('.' == char) {
                 ns = ns ++ &[_]u8{'_'};
                 continue;

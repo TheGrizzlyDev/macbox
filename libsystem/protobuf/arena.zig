@@ -42,16 +42,16 @@ pub const AllocatorBackedUpbArena = extern struct {
             return block[@sizeOf(usize)..].ptr;
         }
 
-        const fullBlock: [*]u8 = @ptrFromInt(@intFromPtr(ptr) - @sizeOf(usize));
-        const requestedBlockSize = std.mem.readInt(usize, fullBlock[0..@sizeOf(usize)], .Big);
-        const block = fullBlock[0..(requestedBlockSize + @sizeOf(usize))];
+        const full_block: [*]u8 = @ptrFromInt(@intFromPtr(ptr) - @sizeOf(usize));
+        const requested_block_size = std.mem.readInt(usize, full_block[0..@sizeOf(usize)], .Big);
+        const block = full_block[0..(requested_block_size + @sizeOf(usize))];
 
         if (size == 0) {
             self.allocator.free(block);
             return null;
         }
-        const mem = self.allocator.realloc(block, size) catch return null;
-        return mem.ptr;
+        const mem = self.allocator.realloc(block, size + @sizeOf(usize)) catch return null;
+        return mem[@sizeOf(usize)..].ptr;
     }
 
     pub fn upbArena(self: *Self) *c.upb_Arena {
