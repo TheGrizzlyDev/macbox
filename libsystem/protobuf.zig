@@ -3,11 +3,13 @@ const proto = @cImport({
     @cInclude("proto/macbox/core/v1/macbox.upb.h");
 });
 
-const allocator = @import("./allocator.zig");
-
 const ProtobufErrors = error{
     failed_allocation,
     failed_parsing,
+};
+
+const ArenaCreationError = error{
+    failed_to_create,
 };
 
 fn upb_string_view_to_string(u: proto.upb_StringView) ?[]const u8 {
@@ -30,43 +32,61 @@ pub fn new_arena() ?*proto.upb_Arena {
     return proto.upb_Arena_New();
 }
 
-export fn upbAllocFunc(alloc: *anyopaque, ptr: [*c]u8, old_size: usize, size: usize) [*c]u8 {
-    _ = alloc;
-    if (ptr == null) {
-        const mem = allocator.get().alloc(u8, size) catch return null;
-        return mem.ptr;
+const AllocatorBackedUpbArena = extern struct {
+    const Self = @This();
+    func: *const anyopaque,
+    allocator: *const std.mem.Allocator,
+    arena: *proto.upb_Arena,
+
+    pub fn init(alloc: *const std.mem.Allocator) !*Self {
+        var self = try alloc.create(AllocatorBackedUpbArena);
+        errdefer alloc.destroy(self);
+        self.allocator = alloc;
+        self.func = &AllocatorBackedUpbArena.upbAllocFunc;
+
+        if (proto.upb_Arena_Init(null, 0, @ptrCast(self))) |arena| {
+            self.arena = arena;
+        } else {
+            return ArenaCreationError.failed_to_create;
+        }
+
+        return self;
     }
-    const old_mem: []u8 = @ptrCast(ptr[0..old_size]);
-    if (size == 0) {
-        allocator.get().free(old_mem);
-        return ptr;
+
+    pub fn deinit(self: *Self) void {
+        proto.upb_Arena_Free(self.arena);
+        self.allocator.destroy(self);
     }
-    const mem = allocator.get().realloc(old_mem, size) catch return null;
-    return mem.ptr;
-}
 
-fn createZigAllocatorBackedArena() ?*proto.upb_Arena {
-    var alloc: [*c]proto.upb_alloc = @constCast(&proto.upb_alloc{ .func = @ptrCast(&upbAllocFunc) });
-    return proto.upb_Arena_Init(null, 0, alloc);
-}
+    pub export fn upbAllocFunc(self: *Self, ptr: [*c]u8, old_size: usize, size: usize) [*c]u8 {
+        std.debug.print("(ptr='{*}', old_size={}, size={})\n", .{ ptr, old_size, size });
+        if (ptr == null) {
+            std.debug.print("ALLOC\n", .{});
+            const mem = self.allocator.alloc(u8, size) catch return null;
+            return mem.ptr;
+        }
+        // const old_mem: []u8 = &ptr;
+        // if (size == 0) {
+        //     std.debug.print("FREE\n", .{});
+        //     self.allocator.free(old_mem);
+        //     return null;
+        // }
+        // std.debug.print("REALLOC\n", .{});
+        // const mem = self.allocator.realloc(old_mem, size) catch return null;
+        // return mem.ptr;
+    }
 
-// pub const ProtoField = struct {
-//     name: []const u8,
-//     typ: type,
-// };
+    pub fn upbArena(self: *Self) *proto.upb_Arena {
+        return self.arena;
+    }
+};
 
-// pub fn createProto(fields: []const ProtoField) type {
-//     return struct {
-
-//     }
-// }
-
-test "upb uses a zig allocator" {
-    var arena = createZigAllocatorBackedArena() orelse return std.testing.expect(false);
-    var req = try ApiRequest.init(arena);
-    std.debug.print("PID: {?}", .{req.get_pid()});
+test "upb uses a zig allocator and does not leak" {
+    var arena = try AllocatorBackedUpbArena.init(&std.testing.allocator);
+    defer arena.deinit();
+    var req = try ApiRequest.init(arena.upbArena());
     req.set_pid(1);
-    std.debug.print("PID: {?}", .{req.get_pid()});
+    try std.testing.expectEqual(req.get_pid(), 1);
 }
 
 pub const ApiRequest = struct {
