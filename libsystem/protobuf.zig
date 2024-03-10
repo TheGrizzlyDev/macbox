@@ -26,10 +26,10 @@ fn upb_string_view_from_string(s: []const u8) proto.upb_StringView {
     };
 }
 
-const UpbAllocBlock = struct {
+const UpbAllocBlock = extern struct {
     const Self = @This();
-    buf: [*c]u8,
     len: usize,
+    buf: [*c]u8,
 
     pub fn toSlice(self: Self) []u8 {
         return self.buf[0..self.len];
@@ -63,30 +63,23 @@ const AllocatorBackedUpbArena = extern struct {
     }
 
     pub export fn upbAllocFunc(self: *Self, ptr: [*c]u8, old_size: usize, size: usize) [*c]u8 {
-        std.debug.print("(ptr='{*}', old_size={}, size={})\n", .{ ptr, old_size, size });
+        _ = old_size;
         if (ptr == null) {
-            std.debug.print("ALLOC\n", .{});
-            var block = self.allocator.create(UpbAllocBlock) catch return null;
-            const buf = self.allocator.alloc(u8, size) catch {
-                self.allocator.destroy(block);
-                return null;
-            };
-            block.buf = buf.ptr;
-            block.len = buf.len;
-            return block.buf;
+            const block = self.allocator.alloc(u8, size + @sizeOf(usize)) catch return null;
+            std.mem.writeInt(usize, block[0..@sizeOf(usize)], size, .Big);
+            return block[@sizeOf(usize)..].ptr;
         }
-        const block = @fieldParentPtr(UpbAllocBlock, "buf", &ptr);
-        std.debug.print("block: {any}\n", .{block});
-        return null;
-        // const old_mem: []u8 = &ptr;
-        // if (size == 0) {
-        //     std.debug.print("FREE\n", .{});
-        //     self.allocator.free(old_mem);
-        //     return null;
-        // }
-        // std.debug.print("REALLOC\n", .{});
-        // const mem = self.allocator.realloc(old_mem, size) catch return null;
-        // return mem.ptr;
+
+        const fullBlock: [*]u8 = @ptrFromInt(@intFromPtr(ptr) - @sizeOf(usize));
+        const requestedBlockSize = std.mem.readInt(usize, fullBlock[0..@sizeOf(usize)], .Big);
+        const block = fullBlock[0..(requestedBlockSize + @sizeOf(usize))];
+
+        if (size == 0) {
+            self.allocator.free(block);
+            return null;
+        }
+        const mem = self.allocator.realloc(block, size) catch return null;
+        return mem.ptr;
     }
 
     pub fn upbArena(self: *Self) *proto.upb_Arena {
