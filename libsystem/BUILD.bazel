@@ -1,35 +1,41 @@
-load("@rules_zig//zig:defs.bzl", "zig_shared_library", "zig_test")
+load("@rules_zig//zig:defs.bzl", "zig_shared_library", "zig_test", "zig_module")
 
 cc_library(
-    name = "libsystem_support",
+    name = "csrcs",
     srcs = glob(["*.c"]),
     hdrs = glob(["*.h"]),
 )
 
+zig_module(
+    name = "module",
+    srcs = glob(["**/*.zig"]),
+    main = "main.zig",
+)
+
 zig_shared_library(
     name = "libsystem",
+    deps = [":module"],
     main = "main.zig",
-    srcs = glob(["*.zig"]),
     copts = [
         "-ldl",  # Provides dlsym
     ],
     cdeps = [
         "@rules_zig//zig/lib:libc",
         "//proto/macbox/core/v1:macbox_core_v1_c_proto",
-        ":libsystem_support",
-    ]
+        ":csrcs",
+    ],
 )
 
 zig_test(
     name = "test",
-    main = "test.zig",
-    srcs = glob(["*.zig"]),
+    main = "main.zig",
+    deps = [":module"],
     copts = [
         "-ldl",  # Provides dlsym
     ],
     cdeps = [
         "@rules_zig//zig/lib:libc",
         "//proto/macbox/core/v1:macbox_core_v1_c_proto",
-        ":libsystem_support",
-    ]
+        ":csrcs",
+    ],
 )

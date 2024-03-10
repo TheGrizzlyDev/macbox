@@ -26,16 +26,6 @@ fn upb_string_view_from_string(s: []const u8) proto.upb_StringView {
     };
 }
 
-const UpbAllocBlock = extern struct {
-    const Self = @This();
-    len: usize,
-    buf: [*c]u8,
-
-    pub fn toSlice(self: Self) []u8 {
-        return self.buf[0..self.len];
-    }
-};
-
 const AllocatorBackedUpbArena = extern struct {
     const Self = @This();
     func: *const anyopaque,

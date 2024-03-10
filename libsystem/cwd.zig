@@ -1,6 +1,5 @@
 const std = @import("std");
 const libs = @import("./libs.zig");
-const protobuf = @import("./protobuf.zig");
 const errno = @import("./errno.zig");
 const api = @import("./api.zig");
 const allocator = @import("./allocator.zig");

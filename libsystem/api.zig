@@ -1,7 +1,6 @@
 const std = @import("std");
 const libs = @import("./libs.zig");
 const allocator = @import("./allocator.zig");
-const protobuf = @import("./protobuf.zig");
 
 const c = @cImport({
     @cInclude("libsystem/api.h");
