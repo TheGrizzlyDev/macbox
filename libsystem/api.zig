@@ -1,6 +1,7 @@
 const std = @import("std");
 const libs = @import("./libs.zig");
 const global_allocator = @import("./allocator.zig");
+const rpc = @import("protobuf/types.zig");
 
 const c = @cImport({
     @cInclude("libsystem/api.h");
@@ -40,8 +41,41 @@ const Connection = struct {
     pub fn deinit(self: *Self) void {
         self.allocator.destroy(self);
     }
+
+    fn rawSend(self: *Self, req: *rpc.Request) !*rpc.Response {
+        const serializedReq = try req.serialize(&self.allocator);
+        defer serializedReq.deinit();
+        const lenBuf: *[8]u8 = @ptrCast(try self.allocator.alloc(u8, 8)); // TODO could be on the stack
+        defer self.allocator.free(lenBuf);
+        std.mem.writeInt(u64, lenBuf, serializedReq.slice.len, .Big);
+        const write = try libs.dlsym("write");
+        _ = write(self.socket, lenBuf.ptr, lenBuf.len); // TODO check bytes written
+        _ = write(self.socket, serializedReq.slice.ptr, serializedReq.slice.len); // TODO check bytes written
+
+        const read = try libs.dlsym("read");
+        var responseLenBuf: *[8]u8 = @ptrCast(try self.allocator.alloc(u8, 8)); // TODO could be on the stack
+        defer self.allocator.free(responseLenBuf);
+        _ = read(self.socket, responseLenBuf, 8); // TODO check bytes read
+        const responseLen = std.mem.readInt(u64, responseLenBuf, .Big);
+        const responseBuf = try self.allocator.alloc(u8, responseLen);
+        defer self.allocator.free(responseBuf);
+        _ = read(self.socket, responseBuf.ptr, responseLen); // TODO check bytes read
+        return try rpc.Response.deserialize(&self.allocator, responseBuf);
+    }
+
+    pub fn send(self: *Self, comptime ResponseType: type, method: []const u8, message: anytype) !*ResponseType {
+        var request = try rpc.Request.init(&self.allocator);
+        defer request.deinit();
+        request.setString("method", method);
+        var payload = try message.serialize(&self.allocator);
+        defer payload.deinit();
+        request.setString("payload", payload.slice);
+        var rawResponse = try self.rawSend(request);
+        return try ResponseType.deserialize(&self.allocator, rawResponse.getString("payload").?); // TODO actually handle null string
+    }
 };
 
+// TODO replace with an arena allocator and use that internally
 const Client = struct {
     const Self = @This();
     const ConnectionPoolMap = std.AutoHashMap(i32, *Connection);
@@ -68,6 +102,8 @@ const Client = struct {
     }
 };
 
+// TODO create a initFromEnv method in client to encapsulate setup logic and just reistantiate it every time
+// optionally create a cache for sockets and maybe connections
 var client: ?*Client = null;
 
 fn getClient() *Client {
@@ -81,7 +117,10 @@ fn getClient() *Client {
 }
 
 pub fn getcwd() []const u8 {
-    var conn = getClient().getConnection() catch return "/";
-    _ = conn;
-    return "/bla/bla";
+    var conn = getClient().getConnection() catch return "/foo";
+    std.debug.print("oops\n", .{});
+    var request = rpc.ApiRequest.init(&global_allocator.get()) catch return "/bar";
+    var response = conn.send(rpc.ApiResponse, "cwd", request) catch return "/goo";
+    var cwdResponse = rpc.CwdResponse.deserialize(&global_allocator.get(), response.getString("payload") orelse return "/woo") catch return "/baz";
+    return cwdResponse.getString("path") orelse "/yoo";
 }

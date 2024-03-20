@@ -22,6 +22,7 @@ zig_shared_library(
     cdeps = [
         "@rules_zig//zig/lib:libc",
         "//proto/macbox/core/v1:macbox_core_v1_c_proto",
+        "//proto/protocol/v1:protocol_v1_c_proto",
         ":csrcs",
     ],
 )
@@ -36,6 +37,7 @@ zig_test(
     cdeps = [
         "@rules_zig//zig/lib:libc",
         "//proto/macbox/core/v1:macbox_core_v1_c_proto",
+        "//proto/protocol/v1:protocol_v1_c_proto",
         ":csrcs",
     ],
 )

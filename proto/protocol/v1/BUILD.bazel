@@ -19,4 +19,7 @@ c_proto_library(
     name = "protocol_v1_c_proto",
     protos = [":protocol_v1_proto"],
     visibility = ["//visibility:public"],
+    deps = [
+        "@upb//:message_accessors",
+    ],
 )

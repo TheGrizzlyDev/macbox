@@ -22,7 +22,7 @@ fn SliceWithUpbArena(comptime T: type) type {
     };
 }
 
-fn bindToProto(comptime c: type, comptime fully_qualified_name: []const u8) type {
+pub fn bindToProto(comptime c: type, comptime fully_qualified_name: []const u8) type {
     const upbNamespace: []const u8 = blk: {
         var ns: []const u8 = &[_]u8{};
         for (fully_qualified_name) |char| {
@@ -108,8 +108,24 @@ fn bindToProto(comptime c: type, comptime fully_qualified_name: []const u8) type
             return @call(.auto, @field(c, std.fmt.comptimePrint("{s}_{s}", .{ upbNamespace, field })), .{self.msg});
         }
 
+        pub fn getString(self: *Self, comptime field: []const u8) ?[]const u8 {
+            const u = self.get(field);
+            if (u.data) |str| {
+                return str[0..u.size];
+            }
+            return null;
+        }
+
         pub fn set(self: *Self, comptime field: []const u8, value: anytype) void {
             return @call(.auto, @field(c, std.fmt.comptimePrint("{s}_set_{s}", .{ upbNamespace, field })), .{ self.msg, value });
+        }
+
+        pub fn setString(self: *Self, comptime field: []const u8, value: []const u8) void {
+            const s = c.upb_StringView{
+                .size = value.len,
+                .data = value.ptr,
+            };
+            return self.set(field, s);
         }
 
         pub fn clear(self: *Self, comptime field: []const u8) void {
